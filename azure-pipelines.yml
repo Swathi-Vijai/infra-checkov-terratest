@@ -7,21 +7,20 @@ trigger: none
 pr:
   - main
 
+pool:
+  vmImage: 'ubuntu-latest'
+
 stages:
   - stage: checkov
     jobs:
         - job: compliance
           displayName: 'Run checkov for compliance'
-          pool:
-            vmImage: 'ubuntu-latest'
-
           steps:
            # task to install checkov 
             - task: Bash@3
               inputs:
                 targetType: 'inline'
                 script: 'pip3 install checkov'
-            
             
             - task: Bash@3
               displayName: 'Checkov Static Code Analysis'
@@ -42,11 +41,13 @@ stages:
                 testResultsFormat: 'JUnit'
                 testResultsFiles: 'checkov-report.xml'
                 searchFolder: '$(System.DefaultWorkingDirectory)'
-            
+                 
+            # optional task Need to understand the file structure
             - task: PublishBuildArtifacts@1
               inputs:
                 pathtoPublish: $(System.DefaultWorkingDirectory)/checkov-report.json
                 artifactName: Checkov-Report
+            
             - task: PythonScript@0
               inputs:
                 scriptSource: 'inline'
@@ -118,9 +119,7 @@ stages:
                                           for j in range(len((check_results["failed_checks"]))):
                                               Failed_Severity.append(
                                               failed_check[j]["severity"])
-                  
-                                          print(Failed_Severity)
-                  
+                                          #print(Failed_Severity)
                                           flag = 0
                                           for _ in Failed_Severity:
                                               if _ in Restricted_Severity:
@@ -128,7 +127,6 @@ stages:
                                                   break
                                           print(
                                               f"##vso[task.setvariable variable=FlagFaileSeverity;]{flag}")
-                  
                               print(res)
                           else:
                               res = res + str('Check Type:     ' + data["check_type"]).center(120)
@@ -209,7 +207,6 @@ stages:
                   go mod tidy
                   go test -v
               displayName: 'go test'
-
   - stage: cost_estimation
     dependsOn: Terratest
     jobs:
@@ -226,7 +223,6 @@ stages:
 
             - bash: |
                 branch=$(System.PullRequest.TargetBranch)
-                
                 git clone https://github.com/Swathi-Vijai/infra-checkov-poc.git --branch=${branch} /tmp/base
               displayName: Checkout base branch
 
