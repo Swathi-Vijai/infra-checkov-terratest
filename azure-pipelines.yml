@@ -212,7 +212,7 @@ stages:
 
  
   - stage: Terratest
-    dependsOn: chekov
+    dependsOn: checkov
     jobs:
         - job: 
           displayName: Terratest
