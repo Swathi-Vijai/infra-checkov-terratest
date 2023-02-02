@@ -38,7 +38,7 @@ steps:
 - task: CmdLine@2
   inputs:
     script: |
-      # az login -u "$(username)" -p "$(password)" 
+      az login -u "$(username)" -p "$(password)" 
       cd test
       go mod init test
       go mod tidy
