@@ -16,6 +16,7 @@ resource "azurerm_virtual_network" "net" {
   dns_servers         = [var.dns_ip_01, var.dns_ip_02]
 }
 
+
 resource "azurerm_subnet" "net" {
   name                 = "subnet-${var.postfix}"
   resource_group_name  = local.resource_group
@@ -59,3 +60,4 @@ resource "azurerm_network_interface" "net02" {
     public_ip_address_id          = azurerm_public_ip.net.id
   }
 }
+
