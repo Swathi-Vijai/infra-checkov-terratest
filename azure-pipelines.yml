@@ -228,7 +228,7 @@ stages:
                 branch=$(System.PullRequest.TargetBranch)
                 
                 git clone https://github.com/Swathi-Vijai/infra-checkov-poc.git --branch=${branch} /tmp/base
-              displayName: Checkout base branch
+              displayName: Checkout Pull Request branch
 
             - bash: |
                 infracost breakdown --path="." \
@@ -251,9 +251,5 @@ stages:
                                   --behavior=update
               displayName: Post Infracost comment
 
-            - task: PublishBuildArtifacts@1
-              inputs:
-                pathtoPublish: /tmp/infracost-base.json
-                artifactName: infracost-base-json
  
   
