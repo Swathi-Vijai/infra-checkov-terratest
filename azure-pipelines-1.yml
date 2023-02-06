@@ -1,7 +1,7 @@
 trigger:  
   branches:
      include:
-       - main
+       - none
 pr:
  branches:
      include:
