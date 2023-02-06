@@ -7,107 +7,20 @@ trigger: none
 pr:
   - main
 
-# pool:
-#   vmImage: ubuntu-latest
-
-# steps:
-# - task: GoTool@0
-#   inputs:
-#     version: '1.19.4'
-
-# - task: CmdLine@2
-#   inputs:
-#     script: |
-#       export MY_VARIABLE="my value"
-#       export ARM_CLIENT_ID="$(ARM_CLIENT_ID)"
-#       export ARM_CLIENT_SECRET="$(ARM_CLIENT_SECRET)"
-#       export ARM_SUBSCRIPTION_ID="$(ARM_SUBSCRIPTION_ID)"
-#       export ARM_TENANT_ID="$(ARM_TENANT_ID)"
-#       echo "Environment Variables exported"
-#       echo "sub id"
-#       echo $ARM_SUBSCRIPTION_ID
-#       echo "tenant id"
-#       echo $ARM_TENANT_ID
-#       echo "client secret"
-#       echo $ARM_CLIENT_SECRET
-#       echo "client id"
-#       echo $ARM_CLIENT_ID
-#       echo "my variable"
-#       echo $MY_VARIABLE
-#   displayName: 'Env variables setup'
-
-# - task: CmdLine@2
-#   inputs:
-#     script: |
-#       az login -u "$(username)" -p "$(password)" 
-#       cd test
-#       go mod init test
-#       go mod tidy
-#       go test -v
-#   displayName: 'go test'
-
-# - script: |
-#     echo Add other tasks to build, test, and deploy your project.
-#     echo See https://aka.ms/yaml
-#   displayName: 'Run a multi-line script'
+pool:
+  vmImage: 'ubuntu-latest'
 
 stages:
-  - stage: Terratest
-    jobs:
-        - job: 
-          displayName: Terratest
-          pool: 
-            vmImage: ubuntu-latest
-          
-          steps:
-            - task: GoTool@0
-              inputs:
-                version: '1.19.4'
-
-            - task: CmdLine@2
-              inputs:
-                script: |
-                  export MY_VARIABLE="my value"
-                  export ARM_CLIENT_ID="$(ARM_CLIENT_ID)"
-                  export ARM_CLIENT_SECRET="$(ARM_CLIENT_SECRET)"
-                  export ARM_SUBSCRIPTION_ID="$(ARM_SUBSCRIPTION_ID)"
-                  export ARM_TENANT_ID="$(ARM_TENANT_ID)"
-                  echo "Environment Variables exported"
-                  echo "sub id"
-                  echo $ARM_SUBSCRIPTION_ID
-                  echo "tenant id"
-                  echo $ARM_TENANT_ID
-                  echo "client secret"
-                  echo $ARM_CLIENT_SECRET
-                  echo "client id"
-                  echo $ARM_CLIENT_ID
-                  echo "my variable"
-                  echo $MY_VARIABLE
-              displayName: 'Env variables setup'
-
-            - task: CmdLine@2
-              inputs:
-                script: |
-                  az login -u "$(username)" -p "$(password)" 
-                  cd test
-                  go mod init test
-                  go mod tidy
-                  go test -v
-              displayName: 'go test'
   - stage: checkov
     jobs:
         - job: compliance
           displayName: 'Run checkov for compliance'
-          pool:
-            vmImage: 'ubuntu-latest'
-
           steps:
            # task to install checkov 
             - task: Bash@3
               inputs:
                 targetType: 'inline'
                 script: 'pip3 install checkov'
-            
             
             - task: Bash@3
               displayName: 'Checkov Static Code Analysis'
@@ -128,11 +41,13 @@ stages:
                 testResultsFormat: 'JUnit'
                 testResultsFiles: 'checkov-report.xml'
                 searchFolder: '$(System.DefaultWorkingDirectory)'
-            
+                 
+            # optional task Need to understand the file structure
             - task: PublishBuildArtifacts@1
               inputs:
                 pathtoPublish: $(System.DefaultWorkingDirectory)/checkov-report.json
                 artifactName: Checkov-Report
+            
             - task: PythonScript@0
               inputs:
                 scriptSource: 'inline'
@@ -204,9 +119,7 @@ stages:
                                           for j in range(len((check_results["failed_checks"]))):
                                               Failed_Severity.append(
                                               failed_check[j]["severity"])
-                  
-                                          print(Failed_Severity)
-                  
+                                          #print(Failed_Severity)
                                           flag = 0
                                           for _ in Failed_Severity:
                                               if _ in Restricted_Severity:
@@ -214,7 +127,6 @@ stages:
                                                   break
                                           print(
                                               f"##vso[task.setvariable variable=FlagFaileSeverity;]{flag}")
-                  
                               print(res)
                           else:
                               res = res + str('Check Type:     ' + data["check_type"]).center(120)
@@ -252,8 +164,51 @@ stages:
                   exit 1
                   fi
                 failOnStderr: true
-  - stage: cost_estimation
+  - stage: Terratest
     dependsOn: checkov
+    jobs:
+        - job: 
+          displayName: Terratest
+          pool: 
+            vmImage: ubuntu-latest
+          
+          steps:
+            - task: GoTool@0
+              inputs:
+                version: '1.19.4'
+
+            - task: CmdLine@2
+              inputs:
+                script: |
+                  export MY_VARIABLE="my value"
+                  export ARM_CLIENT_ID="$(ARM_CLIENT_ID)"
+                  export ARM_CLIENT_SECRET="$(ARM_CLIENT_SECRET)"
+                  export ARM_SUBSCRIPTION_ID="$(ARM_SUBSCRIPTION_ID)"
+                  export ARM_TENANT_ID="$(ARM_TENANT_ID)"
+                  echo "Environment Variables exported"
+                  echo "sub id"
+                  echo $ARM_SUBSCRIPTION_ID
+                  echo "tenant id"
+                  echo $ARM_TENANT_ID
+                  echo "client secret"
+                  echo $ARM_CLIENT_SECRET
+                  echo "client id"
+                  echo $ARM_CLIENT_ID
+                  echo "my variable"
+                  echo $MY_VARIABLE
+              displayName: 'Env variables setup'
+
+            - task: CmdLine@2
+              inputs:
+                script: |
+                  az login -u "$(username)" -p "$(password)" 
+                  cd test
+                  go mod init test
+                  go mod tidy
+                  go test -v
+              displayName: 'go test'
+  - stage: cost_estimation
+    dependsOn: Terratest
     jobs:
         - job: 
           displayName: 'infracost'
@@ -268,12 +223,11 @@ stages:
 
             - bash: |
                 branch=$(System.PullRequest.TargetBranch)
-                
                 git clone https://github.com/Swathi-Vijai/infra-checkov-poc.git --branch=${branch} /tmp/base
               displayName: Checkout base branch
 
             - bash: |
-                infracost breakdown --path="." \
+                infracost breakdown --path=$(TF_ROOT) \
                                       --format=json \
                                       --out-file=/tmp/infracost-base.json 
               displayName: Generate Infracost cost estimate baseline
@@ -293,9 +247,5 @@ stages:
                                   --behavior=update
               displayName: Post Infracost comment
 
-            - task: PublishBuildArtifacts@1
-              inputs:
-                pathtoPublish: /tmp/infracost-base.json
-                artifactName: infracost-base-json
  
   
