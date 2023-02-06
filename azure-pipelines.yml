@@ -29,9 +29,9 @@ stages:
                 #checkov --directory ./ --hard-fail-on MEDIUM --bc-api-key  $(API-KEY-2) --skip-path ./test --output json > $(System.DefaultWorkingDirectory)/checkov-report.json
                 # checkov command to display errors in 3 places- (json format-github pr comment), (xml format-azure pipeline test plans) and command without output format to display in pipeline runs
                 script: |
-                  checkov --directory ./main.tf --skip-path ./test --check MEDIUM --bc-api-key  $(API-KEY-2)  --output junitxml > $(System.DefaultWorkingDirectory)/checkov-report.xml 
-                  checkov --directory ./main.tf --skip-path ./test --check MEDIUM --bc-api-key  $(API-KEY-2)  --output json > $(System.DefaultWorkingDirectory)/checkov-report.json
-                  checkov --directory ./main.tf --skip-path ./test --check MEDIUM  
+                  checkov --directory ./Terraform --check MEDIUM --bc-api-key  $(API-KEY-2)  --output junitxml > $(System.DefaultWorkingDirectory)/checkov-report.xml 
+                  checkov --directory ./Terraform --check MEDIUM --bc-api-key  $(API-KEY-2)  --output json > $(System.DefaultWorkingDirectory)/checkov-report.json
+                  checkov --directory ./Terraform --check MEDIUM  
               continueOnError: true
 
             
