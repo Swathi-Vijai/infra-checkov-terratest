@@ -28,9 +28,9 @@ stages:
                 targetType: 'inline'
                 # checkov command to display errors in 3 places- (json format-github pr comment), (xml format-azure pipeline test plans) and command without output format to display in pipeline runs
                 script: |
-                  checkov --directory ./ --hard-fail-on MEDIUM --bc-api-key  $(API-KEY-2) --skip-check BC_* --output junitxml > $(System.DefaultWorkingDirectory)/checkov-report.xml
-                  checkov --directory ./ --hard-fail-on MEDIUM --bc-api-key  $(API-KEY-2) --skip-check BC_* --output json > $(System.DefaultWorkingDirectory)/checkov-report.json
-                  checkov --directory ./ --hard-fail-on MEDIUM  --skip-check BC_*
+                  checkov --directory ./ --hard-fail-on MEDIUM --bc-api-key  $(API-KEY-2) --skip-path ./test --output junitxml > $(System.DefaultWorkingDirectory)/checkov-report.xml
+                  checkov --directory ./ --hard-fail-on MEDIUM --bc-api-key  $(API-KEY-2) --skip-path ./test --output json > $(System.DefaultWorkingDirectory)/checkov-report.json
+                  checkov --directory ./ --hard-fail-on MEDIUM  --skip-path ./test
               continueOnError: true
 
             
