@@ -27,7 +27,7 @@ func TestTerraformAzureNetworkExample(t *testing.T) {
 	// Configure Terraform setting up a path to Terraform code.
 	terraformOptions := &terraform.Options{
 		// Relative path to the Terraform dir
-		TerraformDir: "../",
+		TerraformDir: "../Terraform",
 
 		// Variables to pass to our Terraform code using -var options.
 		Vars: map[string]interface{}{
