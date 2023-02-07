@@ -46,15 +46,15 @@ stages:
             # optional task Needed for to understand the file structure of checkov report
             - task: PublishBuildArtifacts@1
               inputs:
-                pathtoPublish: $(System.DefaultWorkingDirectory)/checkov-report.json
-                artifactName: Checkov-Report
+                pathtoPublish: $(System.DefaultWorkingDirectory)/Checkov-report_json.json
+                artifactName: Checkov-Report-json
             
             - task: PythonScript@0
               inputs:
                 scriptSource: 'inline'
                 script: |
                   import json
-                  reading_file='checkov-report.json'
+                  reading_file='Checkov-report_json.json'
                   writing_file='summary.json'
                   with open(writing_file, 'w') as report_file:
                       print("The empty json file is created")
