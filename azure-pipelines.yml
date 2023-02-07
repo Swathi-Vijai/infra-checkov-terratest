@@ -47,8 +47,9 @@ stages:
             # optional task Needed for to understand the file structure of checkov report
             - task: PublishBuildArtifacts@1
               inputs:
-                pathtoPublish: $(System.DefaultWorkingDirectory)/Checkov-report_json
-                artifactName: Checkov-Report
+                PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+                ArtifactName: 'drop'
+                publishLocation: 'Container'
             
             - task: PythonScript@0
               inputs:
