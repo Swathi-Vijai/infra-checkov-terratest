@@ -20,7 +20,9 @@ stages:
             - task: Bash@3
               inputs:
                 targetType: 'inline'
-                script: 'pip3 install checkov'
+                script: |
+                  
+                  pip3 install -U checkov
             
             - task: Bash@3
               displayName: 'Checkov Static Code Analysis'
