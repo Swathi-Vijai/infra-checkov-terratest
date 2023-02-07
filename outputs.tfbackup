@@ -21,3 +21,4 @@ output "network_interface_internal" {
 output "network_interface_external" {
   value = azurerm_network_interface.net02.name
 }
+
