@@ -172,8 +172,7 @@ stages:
     jobs:
         - job: 
           displayName: Terratest
-          pool: 
-            vmImage: ubuntu-latest
+          
           
           steps:
             - task: GoTool@0
@@ -215,8 +214,7 @@ stages:
     jobs:
         - job: 
           displayName: 'infracost'
-          pool:
-            vmImage: 'ubuntu-latest'
+          
 
           steps:
             - task: InfracostSetup@1
