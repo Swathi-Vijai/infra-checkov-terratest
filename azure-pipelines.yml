@@ -28,33 +28,30 @@ stages:
               displayName: 'Checkov Static Code Analysis'
               inputs:
                 targetType: 'inline'
-                script: 'checkov --directory  ./Terraform  --file  $(System.DefaultWorkingDirectory)/azure-pipelines-1.yml --file $(System.DefaultWorkingDirectory)/azure-pipelines.yml    --hard-fail-on MEDIUM --bc-api-key  $(API-KEY-2)  --output junitxml > $(System.DefaultWorkingDirectory)/checkov-report.xml --output json > $(System.DefaultWorkingDirectory)/Checkov-report_json.json'
+                script: 'checkov --directory  ./Terraform  --file  $(System.DefaultWorkingDirectory)/azure-pipelines-1.yml --file $(System.DefaultWorkingDirectory)/azure-pipelines.yml    --hard-fail-on MEDIUM --bc-api-key  $(API-KEY-2)  --output junitxml > $(System.DefaultWorkingDirectory)/Checkov-report_xml.xml --output json > $(System.DefaultWorkingDirectory)/Checkov-report_json.json'
               continueOnError: true
 
-            - task: PublishBuildArtifacts@1
-              inputs:
-                pathtoPublish: $(System.DefaultWorkingDirectory)/CheckovReport
-                artifactName: CheckovReport
+            
             - task: PublishTestResults@2
               displayName: 'Publish checkov Test Results'
               condition: succeededOrFailed()
               inputs:
                 testResultsFormat: 'JUnit'
-                testResultsFiles: '**/*Checkov-Report.xml'
-                searchFolder: '$(System.DefaultWorkingDirectory)/CheckovReport'
+                testResultsFiles: 'Checkov-report_xml.xml'
+                searchFolder: '$(System.DefaultWorkingDirectory)'
                  
             # optional task Needed for to understand the file structure of checkov report
             - task: PublishBuildArtifacts@1
               inputs:
-                pathtoPublish: $(System.DefaultWorkingDirectory)/Checkov-report_json.json
-                artifactName: Checkov-Report-json
+                pathtoPublish: $(System.DefaultWorkingDirectory)/Checkov-report_json
+                artifactName: Checkov-Report
             
             - task: PythonScript@0
               inputs:
                 scriptSource: 'inline'
                 script: |
                   import json
-                  reading_file='Checkov-report_json.json'
+                  reading_file='Checkov-report_json'
                   writing_file='summary.json'
                   with open(writing_file, 'w') as report_file:
                       print("The empty json file is created")
