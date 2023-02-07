@@ -28,10 +28,15 @@ stages:
               displayName: 'Checkov Static Code Analysis'
               inputs:
                 targetType: 'inline'
-                script: 'checkov --directory  ./Terraform  --file  $(System.DefaultWorkingDirectory)/azure-pipelines-1.yml --file $(System.DefaultWorkingDirectory)/azure-pipelines.yml    --hard-fail-on MEDIUM --bc-api-key  $(API-KEY-2)  --output junitxml > $(System.DefaultWorkingDirectory)/Checkov-report_xml.xml --output json > $(System.DefaultWorkingDirectory)/Checkov-report_json.json'
+                script: 'checkov --directory  ./Terraform  --file  $(System.DefaultWorkingDirectory)/azure-pipelines-1.yml --file $(System.DefaultWorkingDirectory)/azure-pipelines.yml --hard-fail-on MEDIUM --bc-api-key  $(API-KEY-2) --output junitxml > $(System.DefaultWorkingDirectory)/Checkov-report_xml.xml --output json > $(System.DefaultWorkingDirectory)/Checkov-report_json.json'
               continueOnError: true
 
-            
+            - task: Bash@3
+              displayName: 'listing files'
+              inputs:
+                targetType: 'inline'
+                script: 'ls'
+
             - task: PublishTestResults@2
               displayName: 'Publish checkov Test Results'
               condition: succeededOrFailed()
