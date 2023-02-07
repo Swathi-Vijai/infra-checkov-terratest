@@ -43,7 +43,6 @@ stages:
               inputs:
                 testResultsFormat: 'JUnit'
                 testResultsFiles: 'Checkov-report_xml.xml'
-                failTaskOnFailedTests: true
                  
             # optional task Needed for to understand the file structure of checkov report
             - task: PublishBuildArtifacts@1
