@@ -43,7 +43,7 @@ stages:
               inputs:
                 testResultsFormat: 'JUnit'
                 testResultsFiles: 'Checkov-report_xml.xml'
-                searchFolder: '$(System.DefaultWorkingDirectory)'
+                searchFolder: '/home/vsts/work/1/s/'
                  
             # optional task Needed for to understand the file structure of checkov report
             - task: PublishBuildArtifacts@1
