@@ -204,15 +204,23 @@ stages:
                   cd test
                   go mod init test
                   go mod tidy
-                  go test -v
-                  go test -timeout 30m | tee test_output.log terratest_log_parser -testlog test_output.log -outputdir test_output
+                  
+                  go test tee test_output.log terratest_log_parser -testlog test_output.log -outputdir test_output
               displayName: 'go test'
-            
+            #go test -v
             - task: Bash@3
               displayName: 'listing files'
               inputs:
                 targetType: 'inline'
                 script: 'ls'
+            
+            - task: Bash@3
+              displayName: 'listing files'
+              inputs:
+                targetType: 'inline'
+                script: |
+                  cd test
+                  ls
             
   - stage: cost_estimation
     dependsOn: Terratest
