@@ -96,6 +96,7 @@ stages:
                                   failed_check = (check_results["failed_checks"])
                                   for j in range(len((check_results["failed_checks"]))):
                                     Failed_Severity.append(failed_check[j]["severity"])
+                                  flag = 0
                                   for _ in Failed_Severity:
                                     if _ in Restricted_Severity:
                                       flag = 1
