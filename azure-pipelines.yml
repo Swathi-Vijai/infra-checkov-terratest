@@ -31,12 +31,6 @@ stages:
                 script: 'checkov --directory  ./Terraform  --file  $(System.DefaultWorkingDirectory)/azure-pipelines-1.yml --file $(System.DefaultWorkingDirectory)/azure-pipelines.yml --hard-fail-on MEDIUM --bc-api-key  $(API-KEY-2) -o cli -o junitxml -o  json --output-file-path console,$(System.DefaultWorkingDirectory)/Checkov-report_xml.xml,$(System.DefaultWorkingDirectory)/Checkov-report_json.json'
               continueOnError: true
 
-            - task: Bash@3
-              displayName: 'listing files'
-              inputs:
-                targetType: 'inline'
-                script: 'ls'
-
             - task: PublishTestResults@2
               displayName: 'Publish checkov Test Results'
               condition: succeededOrFailed()
@@ -211,7 +205,15 @@ stages:
                   go mod init test
                   go mod tidy
                   go test -v
+                  go test -timeout 30m | tee test_output.log terratest_log_parser -testlog test_output.log -outputdir test_output
               displayName: 'go test'
+            
+            - task: Bash@3
+              displayName: 'listing files'
+              inputs:
+                targetType: 'inline'
+                script: 'ls'
+            
   - stage: cost_estimation
     dependsOn: Terratest
     jobs:
