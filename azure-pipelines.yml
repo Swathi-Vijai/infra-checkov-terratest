@@ -44,16 +44,11 @@ stages:
                 testResultsFormat: 'JUnit'
                 testResultsFiles: 'Checkov-report_xml.xml'
                  
-            # optional task Needed for to understand the file structure of checkov report
-            - task: PublishBuildArtifacts@1
-              inputs:
-                PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-                ArtifactName: 'drop'
-                publishLocation: 'Container'
-            - task: PublishBuildArtifacts@1
-              inputs:
-                pathtoPublish: $(System.DefaultWorkingDirectory)/Checkov-report_json.json
-                artifactName: Checkov-Report
+            # optional task Needed only to understand the file structure of checkov report
+            # - task: PublishBuildArtifacts@1
+            #   inputs:
+            #     pathtoPublish: $(System.DefaultWorkingDirectory)/Checkov-report_json.json
+            #     artifactName: Checkov-Report
             
             - task: PythonScript@0
               inputs:
