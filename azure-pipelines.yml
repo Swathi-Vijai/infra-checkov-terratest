@@ -85,7 +85,7 @@ stages:
                   
                                   check_results = data[i]["results"]
                                   Failed_Severity = []
-                                  Restricted_Severity = ["HIGH", "CRITICAL"]
+                                  Restricted_Severity = ["HIGH", "CRITICAL","LOW"]
                                   #["HIGH", "CRITICAL", "MEDIUM", "LOW"]
                                   failed_check = (check_results["failed_checks"])
                                   for j in range(len((check_results["failed_checks"]))):
