@@ -76,7 +76,8 @@ stages:
                                   xdata = data[i]["summary"]
                   
                                   res = res + line_indicator + line + line_indicator + ' | '.join(xdata.keys()
-                                  # this report file is use to send email for particular users                                                                ) + line_indicator + divider + line_indicator + ' | '.join(map(str, xdata.values())) + line_indicator + line
+                                                                                                  ) + line_indicator + divider + line_indicator + ' | '.join(map(str, xdata.values())) + line_indicator + line
+                                  # this report file is use to send email for particular users
                                   report_file.write(str('Check Type:     ' +
                                                   data[i]["check_type"]))
                                   report_file.write('\n')
