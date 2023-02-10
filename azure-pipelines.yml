@@ -28,7 +28,7 @@ stages:
               displayName: 'Checkov Static Code Analysis'
               inputs:
                 targetType: 'inline'
-                script: 'checkov --directory  ./Terraform  --file  $(System.DefaultWorkingDirectory)/azure-pipelines-1.yml --file $(System.DefaultWorkingDirectory)/azure-pipelines.yml --hard-fail-on MEDIUM --bc-api-key  $(API-KEY-2) -o cli -o junitxml -o  json --output-file-path console,$(System.DefaultWorkingDirectory)/Checkov-report_xml.xml,$(System.DefaultWorkingDirectory)/Checkov-report_json.json'
+                script: 'checkov --directory  ./Terraform  --file  $(System.DefaultWorkingDirectory)/azure-pipelines-1.yml --file $(System.DefaultWorkingDirectory)/azure-pipelines.yml --hard-fail-on MEDIUM  -o cli -o junitxml -o  json --output-file-path console,$(System.DefaultWorkingDirectory)/Checkov-report_xml.xml,$(System.DefaultWorkingDirectory)/Checkov-report_json.json'
               continueOnError: true
 
             - task: PublishTestResults@2
