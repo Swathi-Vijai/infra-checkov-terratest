@@ -1,29 +1,17 @@
-variable "domain_name_label" {
-  description = "The Domain Name Label for the Public IP Address"
+variable "disk_type" {
+  description = "The type of the Virtual Machine disks"
   type        = string
-  default = "resourcednl"
-}
-
-variable "dns_ip_01" {
-  description = "The first DNS Server IP for the Virtual Network"
-  type        = string
-  default     = "10.0.0.5"
-}
-
-variable "dns_ip_02" {
-  description = "The second DNS Server IP for the Virtual Network"
-  type        = string
-  default     = "10.0.0.6"
+  default     = "Standard_LRS"
 }
 
 variable "location" {
-  description = "The Azure Region to deploy resources too"
+  description = "The Azure location where to deploy your resources too"
   type        = string
   default     = "East US"
 }
 
 variable "postfix" {
-  description = "The postfix that will be attached to all resources deployed"
+  description = "A postfix string to centrally mitigate resource name collisions"
   type        = string
   default     = "resource"
 }
@@ -31,15 +19,54 @@ variable "postfix" {
 variable "private_ip" {
   description = "The Static Private IP for the Internal NIC"
   type        = string
-  default     = "10.0.20.5"
+  default     = "10.0.17.4"
 }
 
 variable "subnet_prefix" {
   description = "The subnet range of IPs for the Virtual Network"
   type        = string
-  default     = "10.0.20.0/24"
+  default     = "10.0.17.0/24"
 }
 
-variable "rg_name" {
-  default = "Devops-RG"
+variable "user_name" {
+  description = "The username to be provisioned into the vm"
+  type        = string
+  default     = "testadmin"
+}
+
+# Small Windows Server Image, available with Azure Free Account
+variable "vm_image_publisher" {
+  description = "The storage image reference Publisher from which the VM is created"
+  type        = string
+  default     = "MicrosoftWindowsServer"
+}
+
+variable "vm_image_offer" {
+  description = "The storage image reference Offer from which the VM is created"
+  type        = string
+  default     = "WindowsServer"
+}
+
+variable "vm_image_sku" {
+  description = "The storage image reference SKU from which the VM is created"
+  type        = string
+  default     = "2019-Datacenter-Core-smalldisk"
+}
+
+variable "vm_image_version" {
+  description = "The storage image reference Version from which the VM is created"
+  type        = string
+  default     = "latest"
+}
+
+variable "vm_license_type" {
+  description = "The License Type from which the VM is created"
+  type        = string
+  default     = "Windows_Server"
+}
+
+variable "vm_size" {
+  description = "The Azure VM Size of the VM"
+  type        = string
+  default     = "Standard_B1s"
 }
