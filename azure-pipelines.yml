@@ -116,7 +116,7 @@ stages:
                                   #["HIGH", "CRITICAL", "MEDIUM", "LOW"]
                                   failed_check = (check_results["failed_checks"])
                                   for j in range(len((check_results["failed_checks"]))):
-                                    Failed_Severity.append(str(get_severity_value(failed_check[j]["guideline"], check_results[_][j]["check_id"])))
+                                    Failed_Severity.append(str(get_severity_value(failed_check[j]["guideline"], failed_check[j]["check_id"])))
                                   flag = 0
                                   for _ in Failed_Severity:
                                     if _ in Restricted_Severity:
