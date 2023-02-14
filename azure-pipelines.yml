@@ -140,7 +140,7 @@ stages:
                   
                                               res = res + line_indicator + \
                                                   str(get_severity_value(check_results[_][j]["guideline"], check_results[_][j]["check_id"])) + \
-                                                  " : " + (check_results[_][j]["check_name"])
+                                                  " : " + (check_results[_][j]["check_name"]) + " - Resource : " + (check_results[_][j]["resource"])
                                               # print("=============")
                                               # print(check_results[_][j]["severity"])
                                               # print("==========================")
