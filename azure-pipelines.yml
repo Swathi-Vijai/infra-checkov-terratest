@@ -48,9 +48,33 @@ stages:
               inputs:
                 scriptSource: 'inline'
                 script: |
+                  def get_severity_value(y):
+                      
+                      import requests
+                      from bs4 import BeautifulSoup
+                      
+                      
+                      # Making a GET request
+                      r = requests.get(y)
+                      soup = BeautifulSoup(r.content, 'html.parser')
+                  
+                      s = soup.find('div', class_='excerpt')
+                      if s == None:
+                          return("LOW")
+                      else:
+                          lines = s.find_all('p')
+                          st=''
+                          for line in lines:
+                              st=st+(line.text)
+                          l=st.split('\n')
+                          for x in l:
+                              if 'Severity' in x:
+                                  return(x[10:1000])
+                  
+                  
                   import json
                   reading_file='Checkov-report_json.json'
-                   # this is where we store the data for email (writing file)
+                  # this is where we store the data for email (writing file)
                   writing_file='summary.json'
                   with open(writing_file, 'w') as report_file:
                       print("The empty json file is created")
@@ -81,7 +105,7 @@ stages:
                                   
                   
                                   check_results = data[i]["results"]
-
+                  
                                   # The next block of code is to use to get the severity levl of each error
                                   # Use flag and set FlagFailedSeverity as an variable
                                   Failed_Severity = []
@@ -89,7 +113,7 @@ stages:
                                   #["HIGH", "CRITICAL", "MEDIUM", "LOW"]
                                   failed_check = (check_results["failed_checks"])
                                   for j in range(len((check_results["failed_checks"]))):
-                                    Failed_Severity.append(failed_check[j]["severity"])
+                                    Failed_Severity.append(str(get_severity_value(failed_check[j]["guideline"])))
                                   flag = 0
                                   for _ in Failed_Severity:
                                     if _ in Restricted_Severity:
@@ -98,7 +122,7 @@ stages:
                                   print(
                                       f"##vso[task.setvariable variable=FlagFailedSeverity;]{flag}")
                                   
-
+                  
                                   
                                   # Rest of the code is for getting the require data for Github pull request and store it in res
                                   # And set GhComment as variable and assign the value as res
@@ -112,7 +136,7 @@ stages:
                                           for j in range(len(check_results[_])):
                   
                                               res = res + line_indicator + \
-                                                  str(check_results[_][j]["severity"]) + \
+                                                  str(get_severity_value(check_results[_][j]["guideline"])) + \
                                                   " : " + (check_results[_][j]["check_name"])
                                               # print("=============")
                                               # print(check_results[_][j]["severity"])
@@ -135,6 +159,7 @@ stages:
                               report_file.write(json.dumps(xdata))
                               
                       print(f"##vso[task.setvariable variable=GhComment;]{res}")
+
             
 
             - task: SendGridEmail@2
