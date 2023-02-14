@@ -48,27 +48,48 @@ stages:
               inputs:
                 scriptSource: 'inline'
                 script: |
+                  def get_severity_value(y):
+                      
+                      import requests
+                      from bs4 import BeautifulSoup
+                      
+                      
+                      # Making a GET request
+                      r = requests.get(y)
+                      soup = BeautifulSoup(r.content, 'html.parser')
+
+                      s = soup.find('div', class_='excerpt')
+                      
+                      lines = s.find_all('p')
+                      st=''
+                      for line in lines:
+                          st=st+(line.text)
+                      l=st.split('\n')
+                      for x in l:
+                          if 'Severity' in x:
+                              return(x[10:1000])
+
                   import json
                   reading_file='Checkov-report_json.json'
-                   # this is where we store the data for email (writing file)
+                  # this is where we store the data for email (writing file)
                   writing_file='summary.json'
                   with open(writing_file, 'w') as report_file:
                       print("The empty json file is created")
                       line = "-"*125
                       divider = ' | '.join(["-"*18 for _ in range(6)])
-                      line_indicator = '%0D%0A'
+                      line_indicator = '/n'
                       block_indicator = """```"""
                       with open(reading_file) as f:
                           data = json.load(f)
                           res = line + line_indicator
-                  
+
                           if type(data) == list:
                               for i in range(len(data)):
                                   res = res + str('Check Type:     ' +
                                                   data[i]["check_type"]).center(120)
-                  
+
                                   xdata = data[i]["summary"]
-                  
+
                                   res = res + line_indicator + line + line_indicator + ' | '.join(xdata.keys()
                                                                                                   ) + line_indicator + divider + line_indicator + ' | '.join(map(str, xdata.values())) + line_indicator + line
                                   # this report file is use to send email for particular users
@@ -79,7 +100,7 @@ stages:
                                   report_file.write('\n')
                                   #################################################
                                   
-                  
+
                                   check_results = data[i]["results"]
 
                                   # The next block of code is to use to get the severity levl of each error
@@ -89,7 +110,7 @@ stages:
                                   #["HIGH", "CRITICAL", "MEDIUM", "LOW"]
                                   failed_check = (check_results["failed_checks"])
                                   for j in range(len((check_results["failed_checks"]))):
-                                    Failed_Severity.append(failed_check[j]["severity"])
+                                    Failed_Severity.append(str(get_severity_value(failed_check[j]["guideline"])))
                                   flag = 0
                                   for _ in Failed_Severity:
                                     if _ in Restricted_Severity:
@@ -105,14 +126,14 @@ stages:
                                   for _ in check_results:
                                       name = " ".join(map(lambda z: z.capitalize(), _.split('_')))
                                       res = res + line_indicator + block_indicator
-                  
+
                                       res = res + line_indicator + name + ':'
                                       if _ != "parsing_errors":
-                  
+
                                           for j in range(len(check_results[_])):
-                  
+
                                               res = res + line_indicator + \
-                                                  str(check_results[_][j]["severity"]) + \
+                                                  str(get_severity_value(check_results[_][j]["guideline"])) + \
                                                   " : " + (check_results[_][j]["check_name"])
                                               # print("=============")
                                               # print(check_results[_][j]["severity"])
@@ -121,7 +142,7 @@ stages:
                                           
                                       else:
                                           for j in range(len(check_results[_])):
-                  
+
                                               res = res + line_indicator + (check_results[_][j])
                                           res = res + line_indicator
                                       res = res + line_indicator + block_indicator + \
@@ -135,6 +156,7 @@ stages:
                               report_file.write(json.dumps(xdata))
                               
                       print(f"##vso[task.setvariable variable=GhComment;]{res}")
+
             
 
             - task: SendGridEmail@2
