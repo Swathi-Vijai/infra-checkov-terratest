@@ -49,27 +49,28 @@ stages:
                 scriptSource: 'inline'
                 script: |
                   def get_severity_value(y):
-                      
-                      import requests
-                      from bs4 import BeautifulSoup
-                      
-                      
-                      # Making a GET request
-                      r = requests.get(y)
-                      soup = BeautifulSoup(r.content, 'html.parser')
-                  
-                      s = soup.find('div', class_='excerpt')
-                      if s == None:
-                          return("LOW")
+                      if y == None:
+                          return("Custom Policy")
                       else:
-                          lines = s.find_all('p')
-                          st=''
-                          for line in lines:
-                              st=st+(line.text)
-                          l=st.split('\n')
-                          for x in l:
-                              if 'Severity' in x:
-                                  return(x[10:1000])
+                          import requests
+                          from bs4 import BeautifulSoup
+
+                          # Making a GET request
+                          r = requests.get(y)
+                          soup = BeautifulSoup(r.content, 'html.parser')
+
+                          s = soup.find('div', class_='excerpt')
+                          if s == None:
+                              return("LOW")
+                          else:
+                              lines = s.find_all('p')
+                              st=''
+                              for line in lines:
+                                  st=st+(line.text)
+                              l=st.split('\n')
+                              for x in l:
+                                  if 'Severity' in x:
+                                      return(x[10:1000])
                   
                   
                   import json
