@@ -79,7 +79,7 @@ stages:
                       print("The empty json file is created")
                       line = "-"*125
                       divider = ' | '.join(["-"*18 for _ in range(6)])
-                      line_indicator = '/n'
+                      line_indicator = '%0D%0A'
                       block_indicator = """```"""
                       with open(reading_file) as f:
                           data = json.load(f)
