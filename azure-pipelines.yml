@@ -49,7 +49,9 @@ stages:
                 scriptSource: 'inline'
                 script: |
                   def get_severity_value(y):
-                      
+                      if y == "https://docs.bridgecrew.io/docs/image-with-no-violations":
+                          return("LOW")
+
                       import requests
                       from bs4 import BeautifulSoup
                       
