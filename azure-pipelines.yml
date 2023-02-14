@@ -48,15 +48,17 @@ stages:
               inputs:
                 scriptSource: 'inline'
                 script: |
-                  def get_severity_value(y):
-                      if y == None:
+                  def get_severity_value(url,check_id):
+                      if url == None and check_id.startswith("CP"):
                           return("Custom Policy")
+                      elif url == None:
+                          return("LOW*")
                       else:
                           import requests
                           from bs4 import BeautifulSoup
 
                           # Making a GET request
-                          r = requests.get(y)
+                          r = requests.get(url)
                           soup = BeautifulSoup(r.content, 'html.parser')
 
                           s = soup.find('div', class_='excerpt')
@@ -71,7 +73,7 @@ stages:
                               for x in l:
                                   if 'Severity' in x:
                                       return(x[10:1000])
-                  
+
                   
                   import json
                   reading_file='Checkov-report_json.json'
@@ -114,7 +116,7 @@ stages:
                                   #["HIGH", "CRITICAL", "MEDIUM", "LOW"]
                                   failed_check = (check_results["failed_checks"])
                                   for j in range(len((check_results["failed_checks"]))):
-                                    Failed_Severity.append(str(get_severity_value(failed_check[j]["guideline"])))
+                                    Failed_Severity.append(str(get_severity_value(failed_check[j]["guideline"], check_results[_][j]["check_id"])))
                                   flag = 0
                                   for _ in Failed_Severity:
                                     if _ in Restricted_Severity:
@@ -137,7 +139,7 @@ stages:
                                           for j in range(len(check_results[_])):
                   
                                               res = res + line_indicator + \
-                                                  str(get_severity_value(check_results[_][j]["guideline"])) + \
+                                                  str(get_severity_value(check_results[_][j]["guideline"], check_results[_][j]["check_id"])) + \
                                                   " : " + (check_results[_][j]["check_name"])
                                               # print("=============")
                                               # print(check_results[_][j]["severity"])
