@@ -9,6 +9,7 @@ locals {
 }
 
 
+
 resource "azurerm_virtual_network" "net" {
   name                = "vnet-${var.postfix}"
   location            = local.location
