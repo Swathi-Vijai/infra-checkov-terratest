@@ -43,3 +43,11 @@ variable "subnet_prefix" {
 variable "rg_name" {
   default = "Devops-RG"
 }
+
+variable "admin_username" {
+  default = "adminuser"
+}
+
+variable "admin_password" {
+  default = "Password123"
+}
