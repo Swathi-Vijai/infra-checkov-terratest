@@ -84,3 +84,4 @@ resource "azurerm_network_interface" "net02" {
 #  } 
 
 
+  
