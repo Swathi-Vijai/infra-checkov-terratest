@@ -61,26 +61,26 @@ resource "azurerm_network_interface" "net02" {
     public_ip_address_id          = azurerm_public_ip.net.id
   }
 }
-# resource   "azurerm_windows_virtual_machine"   "myvm"   { 
-#    name                    =   "myvm1"   
-#    location                =   local.location 
-#    resource_group_name     =   local.resource_group
-#    network_interface_ids   =   [ azurerm_network_interface.net02.id ] 
-#    size                    =   "Standard_B1s" 
-#    admin_username          =   var.admin_username 
-#    admin_password          =   var.admin_password
+resource   "azurerm_windows_virtual_machine"   "myvm"   { 
+   name                    =   "myvm1"   
+   location                =   local.location 
+   resource_group_name     =   local.resource_group
+   network_interface_ids   =   [ azurerm_network_interface.net02.id ] 
+   size                    =   "Standard_B1s" 
+   admin_username          =   var.admin_username 
+   admin_password          =   var.admin_password
 
-#    source_image_reference   { 
-#      publisher   =   "MicrosoftWindowsServer" 
-#      offer       =   "WindowsServer" 
-#      sku         =   "2019-Datacenter" 
-#      version     =   "latest" 
-#    } 
+   source_image_reference   { 
+     publisher   =   "MicrosoftWindowsServer" 
+     offer       =   "WindowsServer" 
+     sku         =   "2019-Datacenter" 
+     version     =   "latest" 
+   } 
 
-#    os_disk   { 
-#      caching             =   "ReadWrite" 
-#      storage_account_type   =   "Standard_LRS" 
-#    } 
-#  } 
+   os_disk   { 
+     caching             =   "ReadWrite" 
+     storage_account_type   =   "Standard_LRS" 
+   } 
+ } 
 
 
