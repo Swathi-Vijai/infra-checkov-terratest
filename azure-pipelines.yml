@@ -237,7 +237,7 @@ stages:
   #             displayName: 'go test'
             
   - stage: cost_estimation
-    dependsOn: Terratest
+    #dependsOn: Terratest
     jobs:
         - job: 
           displayName: 'infracost'
