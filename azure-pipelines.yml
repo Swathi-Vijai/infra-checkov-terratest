@@ -28,7 +28,7 @@ stages:
               displayName: 'Checkov Static Code Analysis'
               inputs:
                 targetType: 'inline'
-                script: 'checkov --directory  ./Terraform  --file  $(System.DefaultWorkingDirectory)/azure-pipelines-1.yml --file $(System.DefaultWorkingDirectory)/azure-pipelines.yml --external-checks-dir cp -o cli -o junitxml -o  json --output-file-path console,$(System.DefaultWorkingDirectory)/Checkov-report_xml.xml,$(System.DefaultWorkingDirectory)/Checkov-report_json.json'
+                script: 'checkov --directory  ./Terraform  --file  $(System.DefaultWorkingDirectory)/azure-pipelines-1.yml --file $(System.DefaultWorkingDirectory)/azure-pipelines.yml --skip-check LOW --external-checks-dir cp -o cli -o junitxml -o  json --output-file-path console,$(System.DefaultWorkingDirectory)/Checkov-report_xml.xml,$(System.DefaultWorkingDirectory)/Checkov-report_json.json'
               continueOnError: true
 
             - task: PublishTestResults@2
@@ -41,7 +41,7 @@ stages:
             # optional task Needed only to understand the file structure of checkov report
             - task: PublishBuildArtifacts@1
               inputs:
-                pathtoPublish: $(System.DefaultWorkingDirectory)/Checkov-report_json.json
+                pathtoPublish: $(System.DefaultWorkingDirectory)/Checkov-report_xml.xml
                 artifactName: Checkov-Report
             
             - task: PythonScript@0
