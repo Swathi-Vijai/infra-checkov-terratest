@@ -15,9 +15,9 @@ output "public_address_name" {
 }
 
 output "network_interface_internal" {
-  value = azurerm_network_interface.net01.name
+  value = azurerm_network_interface.net01sai.name
 }
 
 output "network_interface_external" {
-  value = azurerm_network_interface.net02.name
+  value = azurerm_network_interface.net02sai.name
 }
