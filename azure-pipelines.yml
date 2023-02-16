@@ -41,7 +41,7 @@ stages:
             # optional task Needed only to understand the file structure of checkov report
             - task: PublishBuildArtifacts@1
               inputs:
-                pathtoPublish: $(System.DefaultWorkingDirectory)/Checkov-report_xml.xml
+                pathtoPublish: $(System.DefaultWorkingDirectory)/Checkov-report_json.json
                 artifactName: Checkov-Report
             
             - task: PythonScript@0
