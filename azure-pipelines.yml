@@ -251,7 +251,7 @@ stages:
 
             - bash: |
                 branch=$(System.PullRequest.TargetBranch)
-                git clone https://github.com/Swathi-Vijai/infra-checkov-poc.git --branch=${branch} --single-branch /tmp/base
+                git clone https://github.com/Swathi-Vijai/infra-checkov-terratest.git --branch=${branch} --single-branch /tmp/base
               displayName: Checkout base branch
               
             - task: Bash@3
