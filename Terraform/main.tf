@@ -110,7 +110,7 @@ resource   "azurerm_windows_virtual_machine"   "myvm123"   {
 
 resource "azurerm_windows_virtual_machine" "sai-vm" {
   name                = "sai-vm"
-  resource_group_name = local.resource_group_name
+  resource_group_name = local.resource_group
   location            = local.location
   size                = "Standard_D2s_v3"
   admin_username      = var.admin_username
