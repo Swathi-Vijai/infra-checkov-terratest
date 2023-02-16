@@ -116,7 +116,7 @@ resource "azurerm_windows_virtual_machine" "sai-vm" {
   admin_username      = var.admin_username
   admin_password      = var.admin_password
   network_interface_ids = [
-    azurerm_network_interface.net02sai-interface.id,
+    azurerm_network_interface.net02sai.id,
   ]
 
   os_disk {
