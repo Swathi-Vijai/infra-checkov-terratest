@@ -268,6 +268,17 @@ stages:
                          --out-file=/tmp/infracost.json
               displayName: Generate Infracost diff
             
+            - task: PublishBuildArtifacts@1
+              inputs:
+                pathtoPublish: /tmp/infracost-base.json
+                artifactName: infracost-report
+
+            - task: PublishBuildArtifacts@1
+              inputs:
+                pathtoPublish: /tmp/infracost.json
+                artifactName: infracost-report
+
+            
             - bash: |
                 infracost comment github --path=/tmp/infracost.json \
                                   --repo=$(Build.Repository.Name) \
