@@ -250,8 +250,8 @@ stages:
                 version: '0.10.x'
 
             - bash: |
-                branch=main
-                git clone https://github.com/Swathi-Vijai/infra-checkov-poc.git --branch=${branch} /tmp/base
+                branch=$(System.PullRequest.TargetBranch)
+                git clone https://github.com/Swathi-Vijai/infra-checkov-poc.git --branch=${branch} --single-branch /tmp/base
               displayName: Checkout base branch
               
             - task: Bash@3
@@ -260,8 +260,9 @@ stages:
                 script: |
                   cd /tmp/base
                   ls
+              
             - bash: |
-                infracost breakdown --path=/tmp/base/$(TF_ROOT) \
+                infracost breakdown --path=/tmp/base \
                                       --format=json \
                                       --out-file=/tmp/infracost-base.json 
               displayName: Generate Infracost cost estimate baseline
