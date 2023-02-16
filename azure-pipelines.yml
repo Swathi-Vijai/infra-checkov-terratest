@@ -173,12 +173,12 @@ stages:
                 Subject: 'Checkov_Report of PullRequest - $(System.PullRequest.PullRequestNumber)'
                 emailBodyFormat: 'File'
                 EmailBodyFile: 'summary.json'
-            # - task: GitHubComment@0
-            #   inputs:
-            #     gitHubConnection: 'github.com_checkov' # modify based on client
-            #     repositoryName: '$(Build.Repository.Name)'
-            #     id: '$(System.PullRequest.PullRequestNumber)'
-            #     comment: '$(GhComment)'
+            - task: GitHubComment@0
+              inputs:
+                gitHubConnection: 'github.com_checkov' # modify based on client
+                repositoryName: '$(Build.Repository.Name)'
+                id: '$(System.PullRequest.PullRequestNumber)'
+                comment: '$(GhComment)'
             
 
             - task: Bash@3
@@ -250,10 +250,10 @@ stages:
                 version: '0.10.x'
 
             - bash: |
-                branch=main
+                branch=$(System.PullRequest.TargetBranch)
                 git clone https://github.com/Swathi-Vijai/infra-checkov-poc.git --branch=${branch} /tmp/base
               displayName: Checkout base branch
-              #$(System.PullRequest.TargetBranch)
+              
 
             - bash: |
                 infracost breakdown --path=$(TF_ROOT) \
@@ -268,13 +268,13 @@ stages:
                          --out-file=/tmp/infracost.json
               displayName: Generate Infracost diff
             
-            # - bash: |
-            #     infracost comment github --path=/tmp/infracost.json \
-            #                       --repo=$(Build.Repository.Name) \
-            #                       --pull-request=$(System.PullRequest.PullRequestNumber) \
-            #                       --github-token=$(GITHUB-TOKEN) \
-            #                       --behavior=update
-            #   displayName: Post Infracost comment
+            - bash: |
+                infracost comment github --path=/tmp/infracost.json \
+                                  --repo=$(Build.Repository.Name) \
+                                  --pull-request=$(System.PullRequest.PullRequestNumber) \
+                                  --github-token=$(GITHUB-TOKEN) \
+                                  --behavior=update
+              displayName: Post Infracost comment
 
   
   
