@@ -49,7 +49,18 @@ resource "azurerm_public_ip" "net" {
   domain_name_label       = var.domain_name_label
 }
 
-resource "azurerm_network_interface" "net02" {
+resource "azurerm_public_ip" "net2" {
+  name                    = "pip2-${var.postfix}"
+  resource_group_name     = local.resource_group
+  location                = local.location
+  allocation_method       = "Static"
+  ip_version              = "IPv4"
+  sku                     = "Basic"
+  idle_timeout_in_minutes = "4"
+  domain_name_label       = var.domain_name_label
+}
+
+resource "azurerm_network_interface" "net02sai" {
   name                = "nic-public-${var.postfix}"
   location            = local.location
   resource_group_name = local.resource_group
@@ -61,27 +72,66 @@ resource "azurerm_network_interface" "net02" {
     public_ip_address_id          = azurerm_public_ip.net.id
   }
 }
-# resource   "azurerm_windows_virtual_machine"   "myvm123"   { 
-#    name                    =   "myvm123"   
-#    location                =   local.location 
-#    resource_group_name     =   local.resource_group
-#    network_interface_ids   =   [ azurerm_network_interface.net02.id ] 
-#    size                    =   "Standard_B1s" 
-#    admin_username          =   var.admin_username 
-#    admin_password          =   var.admin_password
 
-#    source_image_reference   { 
-#      publisher   =   "MicrosoftWindowsServer" 
-#      offer       =   "WindowsServer" 
-#      sku         =   "2019-Datacenter" 
-#      version     =   "latest" 
-#    } 
+resource "azurerm_network_interface" "net02sai" {
+  name                = "nic-public-sai-${var.postfix}"
+  location            = local.location
+  resource_group_name = local.resource_group
 
-#    os_disk   { 
-#      caching             =   "ReadWrite" 
-#      storage_account_type   =   "Standard_LRS" 
-#    } 
-#  } 
+  ip_configuration {
+    name                          = "terratestconfiguration1"
+    subnet_id                     = azurerm_subnet.net.id
+    private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.net2.id
+  }
+}
+
+resource   "azurerm_windows_virtual_machine"   "myvm123"   { 
+   name                    =   "myvm123"   
+   location                =   local.location 
+   resource_group_name     =   local.resource_group
+   network_interface_ids   =   [ azurerm_network_interface.net02.id ] 
+   size                    =   "Standard_B1s" 
+   admin_username          =   var.admin_username 
+   admin_password          =   var.admin_password
+
+   source_image_reference   { 
+     publisher   =   "MicrosoftWindowsServer" 
+     offer       =   "WindowsServer" 
+     sku         =   "2019-Datacenter" 
+     version     =   "latest" 
+   } 
+
+   os_disk   { 
+     caching             =   "ReadWrite" 
+     storage_account_type   =   "Standard_LRS" 
+   } 
+}
+
+resource "azurerm_windows_virtual_machine" "sai-vm" {
+  name                = "sai-vm"
+  resource_group_name = local.resource_group_name
+  location            = local.location
+  size                = "Standard_D2s_v3"
+  admin_username      = var.admin_username
+  admin_password      = var.admin_password
+  network_interface_ids = [
+    azurerm_network_interface.net02sai-interface.id,
+  ]
+
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+  source_image_reference {
+    publisher = "MicrosoftWindowsServer"
+    offer     = "WindowsServer"
+    sku       = "2019-Datacenter"
+    version   = "latest"
+  }
+}
+
 
 
   
