@@ -61,8 +61,8 @@ resource "azurerm_network_interface" "net02" {
     public_ip_address_id          = azurerm_public_ip.net.id
   }
 }
-# resource   "azurerm_windows_virtual_machine"   "myvm"   { 
-#    name                    =   "myvm1"   
+# resource   "azurerm_windows_virtual_machine"   "myvm123"   { 
+#    name                    =   "myvm123"   
 #    location                =   local.location 
 #    resource_group_name     =   local.resource_group
 #    network_interface_ids   =   [ azurerm_network_interface.net02.id ] 
