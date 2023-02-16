@@ -173,12 +173,12 @@ stages:
                 Subject: 'Checkov_Report of PullRequest - $(System.PullRequest.PullRequestNumber)'
                 emailBodyFormat: 'File'
                 EmailBodyFile: 'summary.json'
-            - task: GitHubComment@0
-              inputs:
-                gitHubConnection: 'github.com_checkov' # modify based on client
-                repositoryName: '$(Build.Repository.Name)'
-                id: '$(System.PullRequest.PullRequestNumber)'
-                comment: '$(GhComment)'
+            # - task: GitHubComment@0
+            #   inputs:
+            #     gitHubConnection: 'github.com_checkov' # modify based on client
+            #     repositoryName: '$(Build.Repository.Name)'
+            #     id: '$(System.PullRequest.PullRequestNumber)'
+            #     comment: '$(GhComment)'
             
 
             - task: Bash@3
