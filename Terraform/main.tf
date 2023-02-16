@@ -60,7 +60,7 @@ resource "azurerm_public_ip" "net2" {
   domain_name_label       = var.domain_name_label
 }
 
-resource "azurerm_network_interface" "net02sai" {
+resource "azurerm_network_interface" "net01sai" {
   name                = "nic-public-${var.postfix}"
   location            = local.location
   resource_group_name = local.resource_group

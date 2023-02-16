@@ -31,7 +31,7 @@ stages:
             backendAzureRmContainerName: 'swathi-tfstate-asgmt'
             backendAzureRmKey: 'infra-checkov-test1.tfstate'
             backendServiceArm: 'az-asgmts'
-            workingDirectory: $(System.DefaultWorkingDirectory)
+            workingDirectory: $(System.DefaultWorkingDirectory)/Terraform
         # need to modify as generic
 
         - task: TerraformTaskV3@3
@@ -39,7 +39,7 @@ stages:
           inputs:
             command: 'validate'
             provider: 'azurerm'
-            workingDirectory: $(System.DefaultWorkingDirectory)
+            workingDirectory: $(System.DefaultWorkingDirectory)/Terraform
             environmentServiceNameAzureRM: 'az-asgmts'
 
 - stage: dev
@@ -67,7 +67,7 @@ stages:
                   backendAzureRmContainerName: 'swathi-tfstate-asgmt'
                   backendAzureRmKey: 'infra-checkov-test1.tfstate'
                   backendServiceArm: 'az-asgmts'
-                  workingDirectory: $(System.DefaultWorkingDirectory)
+                  workingDirectory: $(System.DefaultWorkingDirectory)/Terraform
 
               - task: TerraformTaskV3@3
                 displayName: 'Terraform Plan'
