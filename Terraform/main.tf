@@ -61,4 +61,4 @@ resource "azurerm_network_interface" "net02" {
     public_ip_address_id          = azurerm_public_ip.net.id
   }
 }
-
+ 
