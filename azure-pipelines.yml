@@ -284,6 +284,34 @@ stages:
                 pathtoPublish: /tmp/infracost.json
                 artifactName: infracost-report
 
+            - task: PythonScript@0
+              inputs:
+                scriptSource: 'inline'
+                script: |
+                  import json
+                  Project_budget_in_USD = 100
+                  
+                  pullrequest_branch='/tmp/infracost.json'
+                  
+                  with open(pullrequest_branch) as PR:
+                      PR_branch_data = json.load(PR)
+                  
+                  Flag1=0
+                  if PR_branch_data["totalMonthlyCost"] > Project_budget_in_USD:
+                      Flag1=1
+                  print(f"##vso[task.setvariable variable=FlagProjectBudget;]{Flag1}")
+                workingDirectory: '/tmp'
+            
+            - task: Bash@3
+              inputs:
+                targetType: 'inline'
+                script: |
+                  if [ $(FlagProjectBudget) -eq 1 ]
+                  then
+                  exit 1
+                  fi
+                failOnStderr: true
+
             
             - bash: |
                 infracost comment github --path=/tmp/infracost.json \
@@ -292,6 +320,7 @@ stages:
                                   --github-token=$(GITHUB-TOKEN) \
                                   --behavior=update
               displayName: Post Infracost comment
+              
 
   
   
