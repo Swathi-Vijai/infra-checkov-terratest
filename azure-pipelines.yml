@@ -289,8 +289,10 @@ stages:
                 scriptSource: 'inline'
                 script: |
                   import json
-                  Project_budget_in_USD = 100
+                  Project_budget_in_USD = 10
                   
+                  PR_value=20
+
                   pullrequest_branch='/tmp/infracost.json'
                   
                   with open(pullrequest_branch) as PR:
@@ -300,6 +302,11 @@ stages:
                   if round(float(PR_branch_data["totalMonthlyCost"])) > Project_budget_in_USD:
                       Flag1=1
                   print(f"##vso[task.setvariable variable=FlagProjectBudget;]{Flag1}")
+
+                  Flag2=0
+                  if round(float(PR_branch_data["diffTotalMonthlyCost"])) > PR_value:
+                      Flag2=1
+                  print(f"##vso[task.setvariable variable=FlagPRValue;]{Flag2}")
                 workingDirectory: '/tmp'
             
             - task: Bash@3
