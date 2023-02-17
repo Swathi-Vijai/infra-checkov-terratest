@@ -326,11 +326,11 @@ stages:
                 script: |
                   echo $FlagProjectBudget
                   echo $FlagAllowedMontlyDiff
-                  if [ $FlagProjectBudget -eq '1' ]
+                  if [[ $FlagProjectBudget -eq 1 ]]
                   then
                   echo "The current PR Price is exceed the Project Budget"
                   exit 1
-                  elif [ $FlagAllowedMontlyDiff -eq '1' ]
+                  elif [[ $FlagAllowedMontlyDiff -eq 1 ]]
                   then
                   echo "The current PR Price is increased by more than the Allowed_monthly_diff"
                   fi
