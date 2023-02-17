@@ -326,8 +326,8 @@ stages:
               inputs:
                 targetType: 'inline'
                 script: |
-                  echo $FlagProjectBudget
-                  echo $FlagAllowedMontlyDiff
+                  echo $(FlagProjectBudget)
+                  echo $(FlagAllowedMontlyDiff)
                   if [[ $FlagProjectBudget -eq 1 ]]
                   then
                   echo "The current PR Price is exceed the Project Budget"
