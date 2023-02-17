@@ -331,12 +331,24 @@ stages:
                   if [[ $(FlagProjectBudget) -eq 1 ]]
                   then
                   echo "The current PR Price is exceed the Project Budget"
+                  - task: GitHubComment@0
+                    inputs:
+                      gitHubConnection: 'github.com_checkov'
+                      repositoryName: '$(Build.Repository.Name)'
+                      comment: 'The current PR Price is exceed the Project Budget'
                   exit 1
                   elif [[ $(FlagAllowedMontlyDiff) -eq 1 ]]
                   then
                   echo "The current PR Price is increased by more than the Allowed_monthly_diff"
+                  - task: GitHubComment@0
+                    inputs:
+                      gitHubConnection: 'github.com_checkov'
+                      repositoryName: '$(Build.Repository.Name)'
+                      comment: 'The current PR Price is increased by more than the Allowed_monthly_diff'
+                  exit 1
                   fi
                 failOnStderr: true
+            
 
             
 
