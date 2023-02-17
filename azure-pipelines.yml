@@ -283,6 +283,14 @@ stages:
               inputs:
                 pathtoPublish: /tmp/infracost.json
                 artifactName: infracost-report
+            
+            - bash: |
+                infracost comment github --path=/tmp/infracost.json \
+                                  --repo=$(Build.Repository.Name) \
+                                  --pull-request=$(System.PullRequest.PullRequestNumber) \
+                                  --github-token=$(GITHUB-TOKEN) \
+                                  --behavior=update
+              displayName: Post Infracost comment
 
             - task: PythonScript@0
               inputs:
@@ -315,28 +323,22 @@ stages:
               inputs:
                 targetType: 'inline'
                 script: |
-                  if [ $(FlagProjectBudget) -eq 1 || $(FlagAllowedMontlyDiff) -eq 1 ]
+                  if [ [ $(FlagProjectBudget) -eq 1 ] || [ $(FlagAllowedMontlyDiff) -eq 1 ] ]
                   then
                   echo "The current PR Price is exceed the Project Budget and Allowed_monthly_diff"
                   exit 1
-                  elif [$(FlagProjectBudget) -eq 1]
+                  elif [ $(FlagProjectBudget) -eq 1 ]
                   then
                   echo "The current PR Price is exceed the Project Budget"
                   exit 1
-                  elif [$(FlagAllowedMontlyDiff) -eq 1]
+                  elif [ $(FlagAllowedMontlyDiff) -eq 1 ]
                   then
                   echo "The current PR Price is increased by more than the Allowed_monthly_diff"
                   fi
                 failOnStderr: true
 
             
-            - bash: |
-                infracost comment github --path=/tmp/infracost.json \
-                                  --repo=$(Build.Repository.Name) \
-                                  --pull-request=$(System.PullRequest.PullRequestNumber) \
-                                  --github-token=$(GITHUB-TOKEN) \
-                                  --behavior=update
-              displayName: Post Infracost comment
+
               
 
   
