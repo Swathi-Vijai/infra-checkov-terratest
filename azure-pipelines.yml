@@ -310,13 +310,14 @@ stages:
                       Flag1=0
                       if round(float(PR_branch_data["totalMonthlyCost"])) > Project_budget_in_USD:
                           Flag1=1
-                      print(f"##vso[task.setvariable variable=FlagProjectBudget;]{Flag1}")
+                      
                   
                   else:
                       Flag2=0
                       if round(float(PR_branch_data["diffTotalMonthlyCost"])) > Allowed_montly_diff:
                           Flag2=1
-                      print(f"##vso[task.setvariable variable=FlagAllowedMontlyDiff;]{Flag2}")
+                  print(f"##vso[task.setvariable variable=FlagProjectBudget;]{Flag1}")
+                  print(f"##vso[task.setvariable variable=FlagAllowedMontlyDiff;]{Flag2}")
                 workingDirectory: '/tmp'
             
             
