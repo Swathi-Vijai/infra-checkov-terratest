@@ -319,6 +319,23 @@ stages:
                       print(f"##vso[task.setvariable variable=FlagAllowedMontlyDiff;]{Flag2}")
                 workingDirectory: '/tmp'
             
+            - task: CmdLine@2
+              inputs:
+                script: |
+                  if [ [ $(FlagProjectBudget) -eq 1 ] && [ $(FlagAllowedMontlyDiff) -eq 1 ] ]
+                  then
+                  echo "The current PR Price is exceed the Project Budget and Allowed_monthly_diff"
+                  exit 1
+                  elif [ $(FlagProjectBudget) -eq 1 ]
+                  then
+                  echo "The current PR Price is exceed the Project Budget"
+                  exit 1
+                  elif [ $(FlagAllowedMontlyDiff) -eq 1 ]
+                  then
+                  echo "The current PR Price is increased by more than the Allowed_monthly_diff"
+                  fi
+                failOnStderr: true
+            
             - task: Bash@3
               inputs:
                 targetType: 'inline'
