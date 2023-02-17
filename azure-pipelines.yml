@@ -289,33 +289,43 @@ stages:
                 scriptSource: 'inline'
                 script: |
                   import json
-                  Project_budget_in_USD = 10
+                  Project_budget_in_USD = 100
                   
-                  PR_value=20
-
-                  pullrequest_branch='/tmp/infracost.json'
+                  Allowed_montly_diff=0
+                  
+                  pullrequest_branch='infracost.json'
                   
                   with open(pullrequest_branch) as PR:
                       PR_branch_data = json.load(PR)
                   
-                  Flag1=0
-                  if round(float(PR_branch_data["totalMonthlyCost"])) > Project_budget_in_USD:
-                      Flag1=1
-                  print(f"##vso[task.setvariable variable=FlagProjectBudget;]{Flag1}")
-
-                  Flag2=0
-                  if round(float(PR_branch_data["diffTotalMonthlyCost"])) > PR_value:
-                      Flag2=1
-                  print(f"##vso[task.setvariable variable=FlagPRValue;]{Flag2}")
+                  if Allowed_montly_diff==0:
+                      Flag1=0
+                      if round(float(PR_branch_data["totalMonthlyCost"])) > Project_budget_in_USD:
+                          Flag1=1
+                      print(f"##vso[task.setvariable variable=FlagProjectBudget;]{Flag1}")
+                  
+                  else:
+                      Flag2=0
+                      if round(float(PR_branch_data["diffTotalMonthlyCost"])) > Allowed_montly_diff:
+                          Flag2=1
+                      print(f"##vso[task.setvariable variable=FlagAllowedMontlyDiff;]{Flag2}")
                 workingDirectory: '/tmp'
             
             - task: Bash@3
               inputs:
                 targetType: 'inline'
                 script: |
-                  if [ $(FlagProjectBudget) -eq 1 ]
+                  if [ $(FlagProjectBudget) -eq 1 || $(FlagAllowedMontlyDiff) -eq 1 ]
                   then
+                  echo "The current PR Price is exceed the Project Budget and Allowed_monthly_diff"
                   exit 1
+                  elif [$(FlagProjectBudget) -eq 1]
+                  then
+                  echo "The current PR Price is exceed the Project Budget"
+                  exit 1
+                  elif [$(FlagAllowedMontlyDiff) -eq 1]
+                  then
+                  echo "The current PR Price is increased by more than the Allowed_monthly_diff"
                   fi
                 failOnStderr: true
 
