@@ -297,7 +297,7 @@ stages:
                       PR_branch_data = json.load(PR)
                   
                   Flag1=0
-                  if PR_branch_data["totalMonthlyCost"] > Project_budget_in_USD:
+                  if round(float(PR_branch_data["totalMonthlyCost"])) > Project_budget_in_USD:
                       Flag1=1
                   print(f"##vso[task.setvariable variable=FlagProjectBudget;]{Flag1}")
                 workingDirectory: '/tmp'
