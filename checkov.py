@@ -39,6 +39,7 @@ if Skip_Severity in Severity:
    sl= Severity[0:i]
 else:
     sl=[]
+print(sl)
 o = open("summary.json", "w")
 f=open('Checkov-report_json.json')
 data=json.load(f)
@@ -54,8 +55,10 @@ if type(data) == list:
       check_results = data[i]["results"]
       passed_check = (check_results["passed_checks"])
       for j in range(len((check_results["passed_checks"]))):
-          if str(get_severity_value(passed_check[j]["guideline"], passed_check[j]["check_id"])) in sl:
-              skip.append(((str(get_severity_value(passed_check[j]["guideline"], passed_check[j]["check_id"]))+ \
+          sw=str(get_severity_value(passed_check[j]["guideline"], passed_check[j]["check_id"])) 
+          print(sw)
+          if sw in sl:
+              skip.append(((str(sw+ \
                                                   " : " + (passed_check[j]["check_name"]) + " - Resource Name : " + (passed_check[j]["resource"]))))
           else:
               pas.append(((str(get_severity_value(passed_check[j]["guideline"], passed_check[j]["check_id"]))+ \
