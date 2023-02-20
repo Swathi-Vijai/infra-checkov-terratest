@@ -97,13 +97,13 @@ if type(data) == list:
       for _ in check_results:
         name = " ".join(map(lambda z: z.capitalize(), _.split('_')))
         res = res + line_indicator + block_indicator
-
+        lis=["Severity","Check Name","Resource name"]
         res = res + line_indicator + name + ':'
         if _ == "passed_checks":
-
+            res = res + line_indicator + line + line_indicator + ' | '.join(lis)
             for x in pas:
 
-                res = res + line_indicator + x    
+                res = res +  line_indicator + divider + line_indicator + ' | '.join(x) + line_indicator + line  
             res = res + line_indicator
         elif _ == "failed_checks":
 
