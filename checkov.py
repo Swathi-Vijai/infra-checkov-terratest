@@ -37,7 +37,7 @@ hfc=0
 flag=0
 if Skip_Severity in Severity:
    i= Severity.index(Skip_Severity)
-   sl= Severity[0:i]
+   sl= Severity[0:(i+1)]
 else:
     sl=[]
 print(sl)
@@ -62,16 +62,17 @@ if type(data) == list:
               skip.append(((str(sw)+ \
                                                   " : " + (passed_check[j]["check_name"]) + " - Resource Name : " + (passed_check[j]["resource"]))))
           else:
-              pas.append(((str(get_severity_value(passed_check[j]["guideline"], passed_check[j]["check_id"]))+ \
+              pas.append(((str(sw)+ \
                                                   " : " + (passed_check[j]["check_name"]) + " - Resource Name : " + (passed_check[j]["resource"]))))
           
       failed_check = (check_results["failed_checks"])
       for j in range(len((check_results["failed_checks"]))):
-          if str(get_severity_value(failed_check[j]["guideline"], failed_check[j]["check_id"])) in sl:
-              skip.append(((str(get_severity_value(failed_check[j]["guideline"], failed_check[j]["check_id"]))+ \
+          sw=str(get_severity_value(failed_check[j]["guideline"], failed_check[j]["check_id"]))
+          if sw in sl:
+              skip.append(((str(sw)+ \
                                                   " : " + (failed_check[j]["check_name"]) + " - Resource Name : " + (failed_check[j]["resource"]))))
           else:
-              if(str(get_severity_value(failed_check[j]["guideline"], failed_check[j]["check_id"]))) in Restricted_Severity:
+              if sw in Restricted_Severity:
                   if(hfc==0):
                       flag = 1
                       print(f"##vso[task.setvariable variable=FlagFailedSeverity;]{flag}")
