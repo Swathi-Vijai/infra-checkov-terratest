@@ -76,7 +76,7 @@ if type(data) == list:
                   if(hfc==0):
                       flag = 1
                       print(f"##vso[task.setvariable variable=FlagFailedSeverity;]{flag}")
-              fail.append((str(get_severity_value(failed_check[j]["guideline"], failed_check[j]["check_id"]))+ \
+              fail.append((str(sw)+ \
                                                   " : " + (failed_check[j]["check_name"]) + " - Resource Name : " + (failed_check[j]["resource"])))
       skipped_checks = (check_results["skipped_checks"])
       for j in range(len((check_results["skipped_checks"]))):
