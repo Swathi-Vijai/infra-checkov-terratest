@@ -59,7 +59,7 @@ if type(data) == list:
           sw=str(get_severity_value(passed_check[j]["guideline"], passed_check[j]["check_id"])) 
           print(sw)
           if sw in sl:
-              skip.append(((str(sw+ \
+              skip.append(((str(sw)+ \
                                                   " : " + (passed_check[j]["check_name"]) + " - Resource Name : " + (passed_check[j]["resource"]))))
           else:
               pas.append(((str(get_severity_value(passed_check[j]["guideline"], passed_check[j]["check_id"]))+ \
