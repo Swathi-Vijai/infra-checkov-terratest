@@ -26,7 +26,7 @@ def get_severity_value(url,check_id):
 
 import json
 line = "-"*125
-divider = ' | '.join(["-"*18 for _ in range(6)])
+divider = ' | '.join(["-"*18 for _ in range(6)])  
 line_indicator = '%0D%0A'
 block_indicator = """```"""
 Severity = ["LOW","MEDIUM","HIGH","CRITICAL"]
