@@ -1,5 +1,29 @@
 def get_severity_value(url,check_id):
-        return 'HIGH'
+                      if url == None and check_id.startswith("CP"):
+                          return("Custom Policy")
+                      elif url == None:
+                          return("LOW*")
+                      else:
+                          import requests
+                          from bs4 import BeautifulSoup
+
+                          # Making a GET request
+                          r = requests.get(url)
+                          soup = BeautifulSoup(r.content, 'html.parser')
+
+                          s = soup.find('div', class_='excerpt')
+                          if s == None:
+                              return("LOW")
+                          else:
+                              lines = s.find_all('p')
+                              st=''
+                              for line in lines:
+                                  st=st+(line.text)
+                              l=st.split('\n')
+                              for x in l:
+                                  if 'Severity' in x:
+                                      return(x[10:1000])
+
 import json
 line = "-"*125
 divider = ' | '.join(["-"*18 for _ in range(6)])
