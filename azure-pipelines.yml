@@ -44,20 +44,7 @@ stages:
                 pathtoPublish: $(System.DefaultWorkingDirectory)/Checkov-report_json.json
                 artifactName: Checkov-Report
             
-            - task: AzureKeyVault@2
-              inputs:
-                azureSubscription: 'Devops-Training (71ae4048-2e46-4255-8eca-c47663aa8f0c)'
-                KeyVaultName: 'devops-training-keyvault'
-                SecretsFilter: '*'
-                RunAsPreJob: false
-            - task: Bash@3
-              inputs:
-                targetType: 'inline'
-                script: |
-                  # Write your commands here
-                  
-                  echo 'Hello world'
-                  echo $(sai-sql-server-password)
+            
             - task: PythonScript@0
               inputs:
                 scriptSource: 'filePath'
