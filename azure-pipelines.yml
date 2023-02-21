@@ -191,6 +191,7 @@ stages:
                   
                   with open(pullrequest_branch, 'w') as PR:
                       json.dump(PR_branch_data, PR)
+                workingDirectory: '/tmp'
 
             - task: PublishBuildArtifacts@1
               inputs:
