@@ -166,6 +166,32 @@ stages:
                 pathtoPublish: /tmp/infracost-base.json
                 artifactName: infracost-report
 
+            - task: PythonScript@0
+              inputs:
+                scriptSource: 'inline'
+                script: |
+                  import json
+                  
+                  Discount_Azure_prices_in_percentage=10
+                  
+                  pullrequest_branch='infracost.json'
+                  
+                  with open(pullrequest_branch, 'r+') as PR:
+                      PR_branch_data = json.load(PR)
+                  Actual_Past_Price = PR_branch_data["pastTotalMonthlyCost"]
+                  Discount = float(Actual_Past_Price)*(Discount_Azure_prices_in_percentage / 100.0)
+                  new_pastTotalMonthlyCost = float(Actual_Past_Price) - Discount
+                  PR_branch_data["pastTotalMonthlyCost"] = str(new_pastTotalMonthlyCost)
+                  
+                  
+                  Actual_Total_Price = PR_branch_data["totalMonthlyCost"]
+                  Discount = float(Actual_Total_Price)*(Discount_Azure_prices_in_percentage / 100.0)
+                  new_totalMonthlyCost = float(Actual_Total_Price) - Discount
+                  PR_branch_data["totalMonthlyCost"] = str(new_totalMonthlyCost)
+                  
+                  with open(pullrequest_branch, 'w') as PR:
+                      json.dump(PR_branch_data, PR)
+
             - task: PublishBuildArtifacts@1
               inputs:
                 pathtoPublish: /tmp/infracost.json
