@@ -44,6 +44,7 @@ stages:
                 pathtoPublish: $(System.DefaultWorkingDirectory)/Checkov-report_json.json
                 artifactName: Checkov-Report
             
+            
             - task: PythonScript@0
               inputs:
                 scriptSource: 'filePath'
@@ -166,35 +167,7 @@ stages:
                 pathtoPublish: /tmp/infracost-base.json
                 artifactName: infracost-report
 
-            - task: PythonScript@0
-              inputs:
-                scriptSource: 'inline'
-                script: |
-                  import json
-                  
-                  Discount_Azure_prices_in_percentage=40
-                  
-                  pullrequest_branch='infracost.json'
-                  
-                  with open(pullrequest_branch, 'r+') as PR:
-                      PR_branch_data = json.load(PR)
-                  
-                  Actual_Past_Price_pastbreakdown = PR_branch_data["projects"][0]["pastBreakdown"]["totalMonthlyCost"]
-                  print(Actual_Past_Price_pastbreakdown)
-                  Discount = float(Actual_Past_Price_pastbreakdown)*(Discount_Azure_prices_in_percentage / 100.0)
-                  new_pastTotalMonthlyCost = float(Actual_Past_Price_pastbreakdown) - Discount
-                  PR_branch_data["projects"][0]["pastBreakdown"]["totalMonthlyCost"] = new_pastTotalMonthlyCost
-                  
-                  Actual_Total_Price_breakdown = PR_branch_data["projects"][0]["breakdown"]["totalMonthlyCost"]
-                  print(Actual_Total_Price_breakdown)
-                  Discount = float(Actual_Total_Price_breakdown)*(Discount_Azure_prices_in_percentage / 100.0)
-                  new_totalMonthlyCost = float(Actual_Total_Price_breakdown) - Discount
-                  PR_branch_data["projects"][0]["breakdown"]["totalMonthlyCost"] = new_totalMonthlyCost
-                  PR.close()
-                  with open(pullrequest_branch, 'w') as PRr:
-                      json.dump(PR_branch_data, PRr)
-                  PRr.close()
-                workingDirectory: '/tmp'
+
 
             - task: PublishBuildArtifacts@1
               inputs:
