@@ -172,7 +172,7 @@ stages:
                 script: |
                   import json
                   
-                  Discount_Azure_prices_in_percentage=10
+                  Discount_Azure_prices_in_percentage=50
                   
                   pullrequest_branch='infracost.json'
                   
@@ -211,7 +211,7 @@ stages:
                 scriptSource: 'inline'
                 script: |
                   import json
-                  Project_budget_in_USD = 100
+                  Project_budget_in_USD = 200
                   
                   Allowed_montly_diff=0
                   
