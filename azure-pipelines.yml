@@ -188,9 +188,10 @@ stages:
                   Discount = float(Actual_Total_Price)*(Discount_Azure_prices_in_percentage / 100.0)
                   new_totalMonthlyCost = float(Actual_Total_Price) - Discount
                   PR_branch_data["totalMonthlyCost"] = str(new_totalMonthlyCost)
-                  
-                  with open(pullrequest_branch, 'w') as PR:
-                      json.dump(PR_branch_data, PR)
+                  PR.close()
+                  with open(pullrequest_branch, 'w') as PRr:
+                      json.dump(PR_branch_data, PRr)
+                  PRr.close()
                 workingDirectory: '/tmp'
 
             - task: PublishBuildArtifacts@1
