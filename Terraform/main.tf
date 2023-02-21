@@ -133,6 +133,35 @@ resource "azurerm_windows_virtual_machine" "sai-vm" {
   }
 }
 
+resource "azurerm_virtual_network" "secure_terraform_network" {
+
+  name                = "secureVnet"
+
+  address_space       = ["10.1.0.0/16"]
+
+  location            = local.location
+
+  resource_group_name = local.resource_group
+
+}
+
+
+
+
+# Create subnet
+
+resource "azurerm_subnet" "secure_terraform_subnet" {
+
+  name                 = "secureSubnet"
+
+  resource_group_name  = local.resource_group
+
+  virtual_network_name = azurerm_virtual_network.secure_terraform_network.name
+
+  address_prefixes     = ["10.1.1.0/24"]
+
+}
+
 
 
   
