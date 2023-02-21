@@ -172,7 +172,7 @@ stages:
                   def get_discount_value(original_value, Disount_in_percentage):
                       a=float(original_value) * (Disount_in_percentage / 100.0)
                       return (str(float(original_value)-a))
-                  Discount_Azure_prices_in_percentage=5
+                  Discount_Azure_prices_in_percentage=10
                   
                   pullrequest_branch='infracost.json'
                   
