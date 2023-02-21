@@ -246,7 +246,7 @@ stages:
                 scriptSource: 'inline'
                 script: |
                   import json
-                  Project_budget_in_USD = 200
+                  Project_budget_in_USD = 147
                   
                   Allowed_montly_diff=0
                   
