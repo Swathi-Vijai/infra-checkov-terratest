@@ -248,7 +248,7 @@ stages:
                   import json
                   Project_budget_in_USD = 147
                   
-                  Allowed_montly_diff=0
+                  Allowed_montly_diff=50
                   
                   pullrequest_branch='infracost.json'
                   
@@ -298,7 +298,7 @@ stages:
                 targetType: 'inline'
                 script: |
                   echo "The current PR Price is increased by more than the Allowed_monthly_diff"
-                  exit
+                  exit 1
             # - task: Bash@3
             #   condition: 
             #   inputs:
