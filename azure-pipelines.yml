@@ -162,6 +162,67 @@ stages:
                          --out-file=/tmp/infracost.json
               displayName: Generate Infracost diff
             
+
+            
+            - task: PythonScript@0
+              inputs:
+                scriptSource: 'inline'
+                script: |
+                  import json
+                  def get_discount_value(original_value, Disount_in_percentage):
+                      a=float(original_value) * (Disount_in_percentage / 100.0)
+                      return (str(float(original_value)-a))
+                  Discount_Azure_prices_in_percentage=5
+                  
+                  pullrequest_branch='infracost.json'
+                  
+                  with open(pullrequest_branch, 'r+') as PR:
+                      PR_branch_data = json.load(PR)
+                  
+                  
+                  for i in range(len(PR_branch_data["projects"])):
+                      Actual_Past_Price_pastbreakdown = PR_branch_data["projects"][i]["pastBreakdown"]["totalMonthlyCost"]
+                      new_Actual_Past_Price_pastbreakdown = get_discount_value(Actual_Past_Price_pastbreakdown, Discount_Azure_prices_in_percentage)
+                      PR_branch_data["projects"][i]["pastBreakdown"]["totalMonthlyCost"] = new_Actual_Past_Price_pastbreakdown
+                  
+                      Actual_Total_Price_breakdown = PR_branch_data["projects"][i]["breakdown"]["totalMonthlyCost"]
+                      new_Actual_Total_Price_breakdown = get_discount_value(Actual_Total_Price_breakdown, Discount_Azure_prices_in_percentage)
+                      PR_branch_data["projects"][i]["breakdown"]["totalMonthlyCost"] = new_Actual_Total_Price_breakdown
+                  
+                      Actual_Total_Price_diff = PR_branch_data["projects"][i]["diff"]["totalMonthlyCost"]
+                      new_Actual_Total_Price_diff = get_discount_value(Actual_Total_Price_diff, Discount_Azure_prices_in_percentage)
+                      PR_branch_data["projects"][i]["diff"]["totalMonthlyCost"] = new_Actual_Total_Price_diff
+                  
+                      # Summary
+                      PR_branch_data["pastTotalMonthlyCost"] = new_Actual_Past_Price_pastbreakdown
+                      PR_branch_data["totalMonthlyCost"] = new_Actual_Total_Price_breakdown
+                      PR_branch_data["diffTotalMonthlyCost"] =new_Actual_Total_Price_diff
+                  
+                      each_project_diff_resources = PR_branch_data["projects"][i]["diff"]["resources"]
+                      for j in range(len(each_project_diff_resources)):
+                          new_Discount_per_resources = get_discount_value(each_project_diff_resources[j]["monthlyCost"], Discount_Azure_prices_in_percentage)
+                          each_project_diff_resources[j]["monthlyCost"]= new_Discount_per_resources
+                          if "costComponents" in each_project_diff_resources[j]:
+                              cost_components_per_resources = each_project_diff_resources[j]["costComponents"]
+                              for k in range(len(cost_components_per_resources)):
+                                  new_cost_component = get_discount_value(cost_components_per_resources[k]["monthlyCost"], Discount_Azure_prices_in_percentage)
+                                  cost_components_per_resources[k]["monthlyCost"] = new_cost_component
+                          if "subresources" in each_project_diff_resources[j]:
+                              subresources_per_each_resource = each_project_diff_resources[j]["subresources"]
+                              for l in range(len(subresources_per_each_resource)):
+                                  new_subresource_cost = get_discount_value(subresources_per_each_resource[l]["monthlyCost"], Discount_Azure_prices_in_percentage)
+                                  subresources_per_each_resource[l]["monthlyCost"] = new_subresource_cost
+                                  if "costComponents" in subresources_per_each_resource[l]:
+                                      costComponents_per_subresources = subresources_per_each_resource[l]["costComponents"]
+                                      for m in range(len(costComponents_per_subresources)):
+                                          new_cost_component_per_subresource = get_discount_value(costComponents_per_subresources[m]["monthlyCost"], Discount_Azure_prices_in_percentage)
+                                          costComponents_per_subresources[m]["monthlyCost"] = new_cost_component_per_subresource 
+                                  
+                  with open(pullrequest_branch, 'w') as PRr:
+                      json.dump(PR_branch_data, PRr)
+                  PRr.close()
+                workingDirectory: '/tmp'
+            
             - task: PublishBuildArtifacts@1
               inputs:
                 pathtoPublish: /tmp/infracost-base.json
@@ -173,65 +234,6 @@ stages:
               inputs:
                 pathtoPublish: /tmp/infracost.json
                 artifactName: infracost-report
-            
-            # - task: PythonScript@0
-            #   inputs:
-            #     scriptSource: 'inline'
-            #     script: |
-            #       import json
-            #       def get_discount_value(original_value, Disount_in_percentage):
-            #           a=float(original_value) * (Disount_in_percentage / 100.0)
-            #           return (float(original_value)-a)
-            #       Discount_Azure_prices_in_percentage=5
-                  
-            #       pullrequest_branch='infracost.json'
-                  
-            #       with open(pullrequest_branch, 'r+') as PR:
-            #           PR_branch_data = json.load(PR)
-                  
-                  
-            #       for i in range(len(PR_branch_data["projects"])):
-            #           Actual_Past_Price_pastbreakdown = PR_branch_data["projects"][i]["pastBreakdown"]["totalMonthlyCost"]
-            #           new_Actual_Past_Price_pastbreakdown = get_discount_value(Actual_Past_Price_pastbreakdown, Discount_Azure_prices_in_percentage)
-            #           PR_branch_data["projects"][i]["pastBreakdown"]["totalMonthlyCost"] = new_Actual_Past_Price_pastbreakdown
-                  
-            #           Actual_Total_Price_breakdown = PR_branch_data["projects"][i]["breakdown"]["totalMonthlyCost"]
-            #           new_Actual_Total_Price_breakdown = get_discount_value(Actual_Total_Price_breakdown, Discount_Azure_prices_in_percentage)
-            #           PR_branch_data["projects"][i]["breakdown"]["totalMonthlyCost"] = new_Actual_Total_Price_breakdown
-                  
-            #           Actual_Total_Price_diff = PR_branch_data["projects"][i]["diff"]["totalMonthlyCost"]
-            #           new_Actual_Total_Price_diff = get_discount_value(Actual_Total_Price_diff, Discount_Azure_prices_in_percentage)
-            #           PR_branch_data["projects"][i]["diff"]["totalMonthlyCost"] = new_Actual_Total_Price_diff
-                  
-            #           # Summary
-            #           PR_branch_data["pastTotalMonthlyCost"] = new_Actual_Past_Price_pastbreakdown
-            #           PR_branch_data["totalMonthlyCost"] = new_Actual_Total_Price_breakdown
-            #           PR_branch_data["diffTotalMonthlyCost"] =new_Actual_Total_Price_diff
-                  
-            #           each_project_diff_resources = PR_branch_data["projects"][i]["diff"]["resources"]
-            #           for j in range(len(each_project_diff_resources)):
-            #               new_Discount_per_resources = get_discount_value(each_project_diff_resources[j]["monthlyCost"], Discount_Azure_prices_in_percentage)
-            #               each_project_diff_resources[j]["monthlyCost"]= new_Discount_per_resources
-            #               if "costComponents" in each_project_diff_resources[j]:
-            #                   cost_components_per_resources = each_project_diff_resources[j]["costComponents"]
-            #                   for k in range(len(cost_components_per_resources)):
-            #                       new_cost_component = get_discount_value(cost_components_per_resources[k]["monthlyCost"], Discount_Azure_prices_in_percentage)
-            #                       cost_components_per_resources[k]["monthlyCost"] = new_cost_component
-            #               if "subresources" in each_project_diff_resources[j]:
-            #                   subresources_per_each_resource = each_project_diff_resources[j]["subresources"]
-            #                   for l in range(len(subresources_per_each_resource)):
-            #                       new_subresource_cost = get_discount_value(subresources_per_each_resource[l]["monthlyCost"], Discount_Azure_prices_in_percentage)
-            #                       subresources_per_each_resource[l]["monthlyCost"] = new_subresource_cost
-            #                       if "costComponents" in subresources_per_each_resource[l]:
-            #                           costComponents_per_subresources = subresources_per_each_resource[l]["costComponents"]
-            #                           for m in range(len(costComponents_per_subresources)):
-            #                               new_cost_component_per_subresource = get_discount_value(costComponents_per_subresources[m]["monthlyCost"], Discount_Azure_prices_in_percentage)
-            #                               costComponents_per_subresources[m]["monthlyCost"] = new_cost_component_per_subresource 
-                                  
-            #       with open(pullrequest_branch, 'w') as PRr:
-            #           json.dump(PR_branch_data, PRr)
-            #       PRr.close()
-            #     workingDirectory: '/tmp'
             
             - bash: |
                 infracost comment github --path=/tmp/infracost.json \
