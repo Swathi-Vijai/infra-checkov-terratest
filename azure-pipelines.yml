@@ -171,13 +171,12 @@ stages:
                 script: |
                   import sys
                   import json
-                  argument = sys.argv[1]
-                  value = int(argument)
-                  print(value)
+                  Discount_argument = sys.argv[1]
+
                   def get_discount_value(original_value, Disount_in_percentage):
                       a=float(original_value) * (Disount_in_percentage / 100.0)
                       return (str(float(original_value)-a))
-                  Discount_Azure_prices_in_percentage=value
+                  Discount_Azure_prices_in_percentage = int(Discount_argument)
                   
                   pullrequest_branch='infracost.json'
                   
@@ -241,23 +240,21 @@ stages:
                 pathtoPublish: /tmp/infracost.json
                 artifactName: infracost-report
             
-            - bash: |
-                infracost comment github --path=/tmp/infracost.json \
-                                  --repo=$(Build.Repository.Name) \
-                                  --pull-request=$(System.PullRequest.PullRequestNumber) \
-                                  --github-token=$(GITHUB-TOKEN) \
-                                  --behavior=update
-              displayName: Post Infracost comment
+
 
             - task: PythonScript@0
               inputs:
                 scriptSource: 'inline'
                 script: |
+                  import sys
                   import json
-                  Project_budget_in_USD = 147
+                  Project_budget_argument = sys.argv[1]
+                  Allowed_montly_diff_argument = sys.argv[2]
+                  Project_budget_in_USD = int(Project_budget_argument)
                   
-                  Allowed_montly_diff=50
-                  
+                  Allowed_montly_diff= int(Allowed_montly_diff_argument)
+                  print(Project_budget_in_USD)
+                  print(Allowed_montly_diff)
                   pullrequest_branch='infracost.json'
                   
                   with open(pullrequest_branch) as PR:
@@ -274,9 +271,16 @@ stages:
                   
                   print(f"##vso[task.setvariable variable=FlagProjectBudget;]{Flag1}")
                   print(f"##vso[task.setvariable variable=FlagAllowedMontlyDiff;]{Flag2}")
-                  
+                arguments: '$(Project_budget), $(Allowed_montly_diff)'
                 workingDirectory: '/tmp'
-            
+            - bash: |
+                infracost comment github --path=/tmp/infracost.json \
+                                  --repo=$(Build.Repository.Name) \
+                                  --pull-request=$(System.PullRequest.PullRequestNumber) \
+                                  --github-token=$(GITHUB-TOKEN) \
+                                  --behavior=update
+              displayName: Post Infracost comment
+
             - task: GitHubComment@0
               condition: eq(variables['FlagProjectBudget'], '1')
               inputs:
