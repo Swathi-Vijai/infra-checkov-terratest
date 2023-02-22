@@ -151,20 +151,23 @@ if type(data) == list:
                 div="-"*len(pas[0])
             for x in pas:
                 res = res + line_indicator + div
-                res = res + line_indicator + x    
-            res = res + line_indicator
+                res = res  + x    
+            res = res + div + line_indicator
         elif _ == "failed_checks":
-
+            if(len(fail)>0):
+                div="-"*len(fail[0])
             for x in fail:
-
-                res = res + line_indicator + x    
-            res = res + line_indicator
+                res = res + line_indicator + div
+                res = res  + x    
+            res = res + div + line_indicator
+                
         elif _ == "skipped_checks":
-
+            f(len(skip)>0):
+                div="-"*len(skip[0])
             for x in skip:
-
-                res = res + line_indicator + x    
-            res = res + line_indicator
+              res = res + line_indicator + div
+                res = res  + x    
+            res = res + div + line_indicator
             
         else:
             for j in range(len(check_results[_])):
