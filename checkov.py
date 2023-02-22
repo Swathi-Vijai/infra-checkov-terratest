@@ -25,7 +25,7 @@ def get_severity_value(url,check_id):
                                   if 'Severity' in x:
                                       return(x[10:1000])
 def format(pa):
-    if(len(pas))==0:
+    if(len(pa))==0:
       return pas
     else:
         pas=["SEVERITY,CHECK-NAME,RESOURCE-NAME "]
@@ -52,7 +52,7 @@ def format(pa):
             else:
                 s=s+lse[i]
             if len(lsc[i]) != mc:
-                s=s + lsc[i] + " "*(mc-(len(lse[i])))
+                s=s + lsc[i] + " "*(mc-(len(lsc[i])))
             else:
                 s=s+lsc[i]
             s=s+ lsr[i]
