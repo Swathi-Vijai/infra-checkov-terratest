@@ -106,7 +106,6 @@ if type(data) == list:
 
         res = res + line_indicator + name + ':'
         if _ == "passed_checks":
-
             fo=tabulate(pas,headers="firstrow",tablefmt="fancy_grid")
             print(fo)
             res = res + line_indicator + fo   
