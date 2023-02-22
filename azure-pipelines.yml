@@ -135,7 +135,7 @@ stages:
           steps:
             - task: InfracostSetup@1
               inputs:
-                apiKey: $(api-key)
+                apiKey: $(api_key)
                 version: '0.10.x'
 
             - bash: |
@@ -157,7 +157,7 @@ stages:
               displayName: Generate Infracost cost estimate baseline
             
             - bash: |
-                infracost diff --path=$(TF-ROOT) \
+                infracost diff --path=$(TF_ROOT) \
                          --format=json \
                          --compare-to=/tmp/infracost-base.json \
                          --out-file=/tmp/infracost.json
