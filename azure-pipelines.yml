@@ -9,8 +9,7 @@ pr:
 
 pool:
   vmImage: 'ubuntu-latest'
-variables:
-   -group: checkov-infra-terratest
+
 stages:
   - stage: checkov
     jobs:
