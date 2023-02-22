@@ -8,7 +8,7 @@ def get_severity_value(url,check_id):
                           import requests
                           from bs4 import BeautifulSoup
 
-                         # Making a GET request
+                          # Making a GET request
                           r = requests.get(url)
                           soup = BeautifulSoup(r.content, 'html.parser')
 
@@ -24,8 +24,48 @@ def get_severity_value(url,check_id):
                               for x in l:
                                   if 'Severity' in x:
                                       return(x[10:1000])
-           
-from tabulate import tabulate
+def format(pa):
+    if(len(pa))==0:
+      return pa
+    else:
+        pas=["SEVERITY,CHECK-NAME,RESOURCE-NAME "]
+        pas.extend(pa)
+        lse=[]
+        lsc=[]
+        lsr=[]
+        for x in pas:
+            
+            sp=x.split(",")
+            lse.append(sp[0])
+            lsc.append(sp[1])
+            lsr.append(sp[2])
+        mc=0
+        for x in lsc:
+            if(len(x)) > mc:
+                mc=len(x)
+        mr=0
+        for x in lsr:
+          if(len(x))  > mr:
+             mr=len(x)
+        pas=[]
+        for i in range(len(lse)):
+            s='|'
+            if len(lse[i]) != 15:
+                s=s + lse[i] + " "*(15-(len(lse[i]))) + '|'
+            else:
+                s=s+lse[i]+ '|'
+            if len(lsc[i]) != mc:
+                s=s + lsc[i] + " "*(mc-(len(lsc[i])))+ '|'
+            else:
+                s=s+lsc[i]+ '|'
+            if len(lsr[i]) != mr:
+                s=s + lsr[i] + " "*(mr-(len(lsr[i])))+ '|'
+            else:
+                s=s+lsr[i]+ '|'
+            pas.append(s)
+        return pas
+    
+
 import json
 line = "-"*125
 divider = ' | '.join(["-"*18 for _ in range(6)])  
@@ -48,7 +88,7 @@ data=json.load(f)
 res = line + line_indicator
 if type(data) == list:
   for i in range(len(data)):
-      pas=[["severity","check name","resource name"]]
+      pas=[]
       fail=[]
       skip=[]
       res = res + str('Check Type:     ' +
@@ -58,37 +98,35 @@ if type(data) == list:
       passed_check = (check_results["passed_checks"])
       for j in range(len((check_results["passed_checks"]))):
           sw=str(get_severity_value(passed_check[j]["guideline"], passed_check[j]["check_id"])) 
+          cn=(passed_check[j]["check_name"])
+          rn=(passed_check[j]["resource"])
           
           if sw in sl:
               skip.append(((str(sw)+ \
-                                                  " : " + (passed_check[j]["check_name"]) + " - Resource Name : " + (passed_check[j]["resource"]))))
+                                                  " , " + (passed_check[j]["check_name"]) + " , " + (passed_check[j]["resource"]))))
           else:
-              du=[]
-              du.append(str(sw))
-              du.append(str(passed_check[j]["check_name"]))
-              du.append(str(passed_check[j]["resource"]))
-              
-              pas.append(du)
-            
+              pas.append(((str(sw)+ \
+                                                  " , " + (passed_check[j]["check_name"]) + " , " + (passed_check[j]["resource"]))))
           
       failed_check = (check_results["failed_checks"])
       for j in range(len((check_results["failed_checks"]))):
           sw=str(get_severity_value(failed_check[j]["guideline"], failed_check[j]["check_id"]))
           if sw in sl:
               skip.append(((str(sw)+ \
-                                                  " : " + (failed_check[j]["check_name"]) + " - Resource Name : " + (failed_check[j]["resource"]))))
+                                                  " , " + (failed_check[j]["check_name"]) + " , " + (failed_check[j]["resource"]))))
           else:
               if sw in Restricted_Severity:
                   if(hfc==0):
                       flag = 1
                       print(f"##vso[task.setvariable variable=FlagFailedSeverity;]{flag}")
               fail.append((str(sw)+ \
-                                                  " : " + (failed_check[j]["check_name"]) + " - Resource Name : " + (failed_check[j]["resource"])))
+                                                  " , " + (failed_check[j]["check_name"]) + " , " + (failed_check[j]["resource"])))
       skipped_checks = (check_results["skipped_checks"])
       for j in range(len((check_results["skipped_checks"]))):
           skip.append(((str(get_severity_value(skipped_checks[j]["guideline"], skipped_checks[j]["check_id"]))+ \
-                                                  " : " + (skipped_checks[j]["check_name"]) + " - Resource Name : " + (skipped_checks[j]["resource"]))))
+                                                  " , " + (skipped_checks[j]["check_name"]) + " , " + (skipped_checks[j]["resource"]))))
      
+      
       xdata['passed']=len(pas)
       xdata['failed'] = len(fail) 
       xdata['skipped']=len(skip)
@@ -97,6 +135,9 @@ if type(data) == list:
       o.write('\n')
       o.write(json.dumps(xdata))
       o.write('\n')
+      pas=format(pas)
+      fail=format(fail)
+      skip=format(skip)
      
       res = res + line_indicator + line + line_indicator + ' | '.join(xdata.keys()
                                                                                                   ) + line_indicator + divider + line_indicator + ' | '.join(map(str, xdata.values())) + line_indicator + line
@@ -106,22 +147,27 @@ if type(data) == list:
 
         res = res + line_indicator + name + ':'
         if _ == "passed_checks":
-            fo=tabulate(pas,headers="firstrow",tablefmt="fancy_grid")
-            res = res + line_indicator
-            res = res + line_indicator + fo   
-            res = res + line_indicator
+            if(len(pas)>0):
+                div="-"*len(pas[0])
+            for x in pas:
+                res = res + line_indicator + div
+                res = res  + line_indicator+ x    
+            res = res+ line_indicator + div + line_indicator
         elif _ == "failed_checks":
-
+            if(len(fail)>0):
+                div="-"*len(fail[0])
             for x in fail:
-
+                res = res + line_indicator + div
                 res = res + line_indicator + x    
-            res = res + line_indicator
+            res = res + line_indicator+ div + line_indicator
+                
         elif _ == "skipped_checks":
-
+            if(len(skip)>0):
+                div="-"*len(skip[0])
             for x in skip:
-
-                res = res + line_indicator + x    
-            res = res + line_indicator
+              res = res + line_indicator + div
+              res = res + line_indicator + x    
+            res = res + line_indicator+ div + line_indicator
             
         else:
             for j in range(len(check_results[_])):
@@ -134,7 +180,7 @@ else:
     res = res + str('Check Type:     ' + data["check_type"]).center(120)
     xdata = data["summary"]
     res = res + line_indicator + line + line_indicator + ' | '.join(xdata.keys()    ) + line_indicator + divider + line_indicator + ' | '.join(map(str, xdata.values())) + line_indicator + line
-print(res) 
-#o.close()
+#o.write(res) 
+o.close()
 print(f"##vso[task.setvariable variable=GhComment;]{res}")
 f.close()
