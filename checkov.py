@@ -3,7 +3,6 @@ def get_severity_value(url,check_id):
                           return("Custom Policy")
                       elif url == None:
                           return("LOW*")
-          
                       else:
                           import requests
                           from bs4 import BeautifulSoup
