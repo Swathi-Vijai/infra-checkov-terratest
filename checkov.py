@@ -147,9 +147,9 @@ if type(data) == list:
 
         res = res + line_indicator + name + ':'
         if _ == "passed_checks":
-
+            div="-"*len(pas[0])
             for x in pas:
-
+                res = res + line_indicator + div
                 res = res + line_indicator + x    
             res = res + line_indicator
         elif _ == "failed_checks":
