@@ -8,7 +8,7 @@ def get_severity_value(url,check_id):
                           import requests
                           from bs4 import BeautifulSoup
 
-                          # Making a GET request
+                         # Making a GET request
                           r = requests.get(url)
                           soup = BeautifulSoup(r.content, 'html.parser')
 
@@ -24,7 +24,8 @@ def get_severity_value(url,check_id):
                               for x in l:
                                   if 'Severity' in x:
                                       return(x[10:1000])
-
+           
+from tabulate import tabulate
 import json
 line = "-"*125
 divider = ' | '.join(["-"*18 for _ in range(6)])  
@@ -47,7 +48,7 @@ data=json.load(f)
 res = line + line_indicator
 if type(data) == list:
   for i in range(len(data)):
-      pas=[]
+      pas=[["severity","check name","resource name"]]
       fail=[]
       skip=[]
       res = res + str('Check Type:     ' +
@@ -62,8 +63,13 @@ if type(data) == list:
               skip.append(((str(sw)+ \
                                                   " : " + (passed_check[j]["check_name"]) + " - Resource Name : " + (passed_check[j]["resource"]))))
           else:
-              pas.append(((str(sw)+ \
-                                                  " : " + (passed_check[j]["check_name"]) + " - Resource Name : " + (passed_check[j]["resource"]))))
+              du=[]
+              du.append(str(sw))
+              du.append(str(passed_check[j]["check_name"]))
+              du.append(str(passed_check[j]["resource"]))
+              
+              pas.append(du)
+            
           
       failed_check = (check_results["failed_checks"])
       for j in range(len((check_results["failed_checks"]))):
@@ -100,10 +106,9 @@ if type(data) == list:
 
         res = res + line_indicator + name + ':'
         if _ == "passed_checks":
-
-            for x in pas:
-
-                res = res + line_indicator + x    
+            fo=tabulate(pas,headers="firstrow",tablefmt="fancy_grid")
+            
+            res = res + line_indicator + fo   
             res = res + line_indicator
         elif _ == "failed_checks":
 
@@ -129,7 +134,7 @@ else:
     res = res + str('Check Type:     ' + data["check_type"]).center(120)
     xdata = data["summary"]
     res = res + line_indicator + line + line_indicator + ' | '.join(xdata.keys()    ) + line_indicator + divider + line_indicator + ' | '.join(map(str, xdata.values())) + line_indicator + line
-#o.write(res) 
+print(res) 
 #o.close()
 print(f"##vso[task.setvariable variable=GhComment;]{res}")
 f.close()
