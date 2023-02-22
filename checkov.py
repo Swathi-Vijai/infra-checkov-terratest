@@ -162,7 +162,7 @@ if type(data) == list:
             res = res + div + line_indicator
                 
         elif _ == "skipped_checks":
-            f(len(skip)>0):
+            if(len(skip)>0):
                 div="-"*len(skip[0])
             for x in skip:
               res = res + line_indicator + div
