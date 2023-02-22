@@ -134,7 +134,7 @@ stages:
           steps:
             - task: InfracostSetup@1
               inputs:
-                apiKey: $(api_key)
+                apiKey: $(api-key)
                 version: '0.10.x'
 
             - bash: |
