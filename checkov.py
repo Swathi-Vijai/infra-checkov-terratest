@@ -40,17 +40,17 @@ def format(pas):
             if(len(x)) > mc:
                 mc=len(x)
             
-        pas=["Severity,check-name,resource name "]
+        pas=["SEVERITY,CHECK-NAME,RESOURCE-NAME "]
         for i in range(len(lse)):
             s=''
             if len(lse[i]) != 15:
-                s=s + lse[i] + " "*(10-(len(lse[i])))
+                s=s + lse[i] + " "*(15-(len(lse[i])))
             else:
                 s=s+lse[i]
             if len(lsc[i]) != mc:
                 s=s + lsc[i] + " "*(mc-(len(lse[i])))
             else:
-                s=s+lse[i]
+                s=s+lsc[i]
             s=s+ lsr[i]
             pas.append(s)
         return pas
