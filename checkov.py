@@ -136,5 +136,6 @@ else:
     xdata = data["summary"]
     res = res + line_indicator + line + line_indicator + ' | '.join(xdata.keys()    ) + line_indicator + divider + line_indicator + ' | '.join(map(str, xdata.values())) + line_indicator + line
 #o.close()
-print(f"##vso[task.setvariable variable=GhComment;]{res}")
+print(type(res))
+(f"##vso[task.setvariable variable=GhComment;]{res}")
 f.close()
