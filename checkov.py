@@ -41,7 +41,7 @@ def format(pas):
                 mc=len(x)
             
         pas=["SEVERITY,CHECK-NAME,RESOURCE-NAME "]
-        for i in range(len(lse)):
+        for i in range(len(lse)+1):
             s=''
             if len(lse[i]) != 15:
                 s=s + lse[i] + " "*(15-(len(lse[i])))
@@ -79,9 +79,9 @@ data=json.load(f)
 res = line + line_indicator
 if type(data) == list:
   for i in range(len(data)):
-      pas=["Severity,check-name,resource name "]
-      fail=["Severity,check-name,resource name "]
-      skip=["Severity,check-name,resource name "]
+      pas=[]
+      fail=[]
+      skip=[]
       res = res + str('Check Type:     ' +
                                                   data[i]["check_type"]).center(120)
       xdata = data[i]["summary"]
