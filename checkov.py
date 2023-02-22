@@ -8,7 +8,7 @@ def get_severity_value(url,check_id):
                           import requests
                           from bs4 import BeautifulSoup
 
-                          # Making a GET request
+                         # Making a GET request
                           r = requests.get(url)
                           soup = BeautifulSoup(r.content, 'html.parser')
 
