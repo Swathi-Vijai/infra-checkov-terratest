@@ -43,7 +43,10 @@ def format(pa):
         for x in lsc:
             if(len(x)) > mc:
                 mc=len(x)
-            
+        mr=0
+        for x in lsr:
+          if(len(x))  > mr:
+             mr=len(x)
         pas=[]
         for i in range(len(lse)):
             s='|'
@@ -55,7 +58,10 @@ def format(pa):
                 s=s + lsc[i] + " "*(mc-(len(lsc[i])))+ '|'
             else:
                 s=s+lsc[i]+ '|'
-            s=s+ lsr[i]+ '|'
+            if len(lsr[i]) != mr:
+                s=s + lsr[i] + " "*(mr-(len(lsr[i])))+ '|'
+            else:
+                s=s+lsr[i]+ '|'
             pas.append(s)
         return pas
     
