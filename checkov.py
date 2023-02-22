@@ -166,7 +166,7 @@ if type(data) == list:
                 div="-"*len(skip[0])
             for x in skip:
               res = res + line_indicator + div
-                res = res  + x    
+              res = res  + x    
             res = res + div + line_indicator
             
         else:
