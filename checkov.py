@@ -46,16 +46,16 @@ def format(pa):
             
         pas=[]
         for i in range(len(lse)):
-            s=''
+            s='|'
             if len(lse[i]) != 15:
-                s=s + lse[i] + " "*(15-(len(lse[i])))
+                s=s + lse[i] + " "*(15-(len(lse[i]))) + '|'
             else:
-                s=s+lse[i]
+                s=s+lse[i]+ '|'
             if len(lsc[i]) != mc:
-                s=s + lsc[i] + " "*(mc-(len(lsc[i])))
+                s=s + lsc[i] + " "*(mc-(len(lsc[i])))+ '|'
             else:
-                s=s+lsc[i]
-            s=s+ lsr[i]
+                s=s+lsc[i]+ '|'
+            s=s+ lsr[i]+ '|'
             pas.append(s)
         return pas
     
@@ -97,7 +97,7 @@ if type(data) == list:
           
           if sw in sl:
               skip.append(((str(sw)+ \
-                                                  " , " + (passed_check[j]["check_name"]) + "," + (passed_check[j]["resource"]))))
+                                                  " , " + (passed_check[j]["check_name"]) + " , " + (passed_check[j]["resource"]))))
           else:
               pas.append(((str(sw)+ \
                                                   " , " + (passed_check[j]["check_name"]) + " , " + (passed_check[j]["resource"]))))
@@ -114,11 +114,11 @@ if type(data) == list:
                       flag = 1
                       print(f"##vso[task.setvariable variable=FlagFailedSeverity;]{flag}")
               fail.append((str(sw)+ \
-                                                  " , " + (failed_check[j]["check_name"]) + " ," + (failed_check[j]["resource"])))
+                                                  " , " + (failed_check[j]["check_name"]) + " , " + (failed_check[j]["resource"])))
       skipped_checks = (check_results["skipped_checks"])
       for j in range(len((check_results["skipped_checks"]))):
           skip.append(((str(get_severity_value(skipped_checks[j]["guideline"], skipped_checks[j]["check_id"]))+ \
-                                                  " ," + (skipped_checks[j]["check_name"]) + " ," + (skipped_checks[j]["resource"]))))
+                                                  " , " + (skipped_checks[j]["check_name"]) + " , " + (skipped_checks[j]["resource"]))))
      
       
       xdata['passed']=len(pas)
