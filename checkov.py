@@ -106,6 +106,7 @@ if type(data) == list:
 
         res = res + line_indicator + name + ':'
         if _ == "passed_checks":
+            res = res + line_indicator
             fo=tabulate(pas,headers="firstrow",tablefmt="fancy_grid")
             
             res = res + line_indicator + fo   
@@ -134,7 +135,6 @@ else:
     res = res + str('Check Type:     ' + data["check_type"]).center(120)
     xdata = data["summary"]
     res = res + line_indicator + line + line_indicator + ' | '.join(xdata.keys()    ) + line_indicator + divider + line_indicator + ' | '.join(map(str, xdata.values())) + line_indicator + line
-print(res) 
 #o.close()
 print(f"##vso[task.setvariable variable=GhComment;]{res}")
 f.close()
