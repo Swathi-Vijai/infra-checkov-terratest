@@ -109,29 +109,58 @@ resource   "azurerm_windows_virtual_machine"   "myvm123"   {
    } 
 }
 
-# resource "azurerm_windows_virtual_machine" "sai-vm" {
-#   name                = "sai-vm"
-#   resource_group_name = local.resource_group
-#   location            = local.location
-#   size                = "Standard_D2s_v3"
-#   admin_username      = var.admin_username
-#   admin_password      = var.admin_password
-#   network_interface_ids = [
-#     azurerm_network_interface.net02sai.id,
-#   ]
+resource "azurerm_windows_virtual_machine" "sai-vm" {
+  name                = "sai-vm"
+  resource_group_name = local.resource_group
+  location            = local.location
+  size                = "Standard_D2s_v3"
+  admin_username      = var.admin_username
+  admin_password      = var.admin_password
+  network_interface_ids = [
+    azurerm_network_interface.net02sai.id,
+  ]
 
-#   os_disk {
-#     caching              = "ReadWrite"
-#     storage_account_type = "Standard_LRS"
-#   }
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
 
-#   source_image_reference {
-#     publisher = "MicrosoftWindowsServer"
-#     offer     = "WindowsServer"
-#     sku       = "2019-Datacenter"
-#     version   = "latest"
-#   }
-# }
+  source_image_reference {
+    publisher = "MicrosoftWindowsServer"
+    offer     = "WindowsServer"
+    sku       = "2019-Datacenter"
+    version   = "latest"
+  }
+}
+
+resource "azurerm_virtual_network" "secure_terraform_network" {
+
+  name                = "secureVnet"
+
+  address_space       = ["10.1.0.0/16"]
+
+  location            = local.location
+
+  resource_group_name = local.resource_group
+
+}
+
+
+
+
+# Create subnet
+
+resource "azurerm_subnet" "secure_terraform_subnet" {
+
+  name                 = "secureSubnet"
+
+  resource_group_name  = local.resource_group
+
+  virtual_network_name = azurerm_virtual_network.secure_terraform_network.name
+
+  address_prefixes     = ["10.1.1.0/24"]
+
+}
 
 
 
