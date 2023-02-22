@@ -173,6 +173,7 @@ stages:
                   import json
                   argument = sys.argv[1]
                   value = int(argument)
+                  print(value)
                   def get_discount_value(original_value, Disount_in_percentage):
                       a=float(original_value) * (Disount_in_percentage / 100.0)
                       return (str(float(original_value)-a))
