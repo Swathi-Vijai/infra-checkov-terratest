@@ -26,7 +26,7 @@ def get_severity_value(url,check_id):
                                       return(x[10:1000])
 def format(pa):
     if(len(pa))==0:
-      return pas
+      return pa
     else:
         pas=["SEVERITY,CHECK-NAME,RESOURCE-NAME "]
         pas.extend(pa)
