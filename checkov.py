@@ -24,8 +24,12 @@ def get_severity_value(url,check_id):
                               for x in l:
                                   if 'Severity' in x:
                                       return(x[10:1000])
-def format(pas):
-    if(len(pas))>0 :
+def format(pa):
+    if(len(pas))==0:
+      return pas
+    else:
+        pas=["SEVERITY,CHECK-NAME,RESOURCE-NAME "]
+        pas.extend(pa)
         lse=[]
         lsc=[]
         lsr=[]
@@ -40,8 +44,8 @@ def format(pas):
             if(len(x)) > mc:
                 mc=len(x)
             
-        pas=["SEVERITY,CHECK-NAME,RESOURCE-NAME "]
-        for i in range(len(lse)+1):
+        pas=[]
+        for i in range(len(lse)):
             s=''
             if len(lse[i]) != 15:
                 s=s + lse[i] + " "*(15-(len(lse[i])))
@@ -54,8 +58,7 @@ def format(pas):
             s=s+ lsr[i]
             pas.append(s)
         return pas
-    else:
-        return pas
+    
 
 import json
 line = "-"*125
