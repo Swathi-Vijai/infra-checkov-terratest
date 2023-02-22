@@ -81,7 +81,6 @@ if Skip_Severity in Severity:
    sl= Severity[0:(i+1)]
 else:
     sl=[]
-
 o = open("summary.json", "w")
 f=open('Checkov-report_json.json')
 data=json.load(f)
