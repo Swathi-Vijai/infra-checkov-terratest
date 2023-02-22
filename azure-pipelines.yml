@@ -177,7 +177,7 @@ stages:
                       a=float(original_value) * (Disount_in_percentage / 100.0)
                       return (str(float(original_value)-a))
                   Discount_Azure_prices_in_percentage = int(Discount_argument)
-                  
+                  print(Discount_Azure_prices_in_percentage)
                   pullrequest_branch='infracost.json'
                   
                   with open(pullrequest_branch, 'r+') as PR:
