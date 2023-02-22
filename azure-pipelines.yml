@@ -169,11 +169,14 @@ stages:
               inputs:
                 scriptSource: 'inline'
                 script: |
+                  import sys
                   import json
+                  argument = sys.argv[1]
+                  value = int(argument)
                   def get_discount_value(original_value, Disount_in_percentage):
                       a=float(original_value) * (Disount_in_percentage / 100.0)
                       return (str(float(original_value)-a))
-                  Discount_Azure_prices_in_percentage=10
+                  Discount_Azure_prices_in_percentage=value
                   
                   pullrequest_branch='infracost.json'
                   
@@ -222,6 +225,7 @@ stages:
                   with open(pullrequest_branch, 'w') as PRr:
                       json.dump(PR_branch_data, PRr)
                   PRr.close()
+                arguments: '$(percentage_value)'
                 workingDirectory: '/tmp'
             
             - task: PublishBuildArtifacts@1
