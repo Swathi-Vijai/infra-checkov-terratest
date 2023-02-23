@@ -22,9 +22,9 @@ def get_severity_value(url,check_id):
                 st=st+(line.text)
             l=st.split('\n')
             for x in l:
-                if 'Severity' in x:
-                    return(x[10:1000])
-                elif 'Bridgecrew Severity' in x:
+                if 'Bridgecrew Severity' in x:
+                    return(x[21:1000])
+                elif 'Severity' in x:
                     return(x[10:1000])
 def github_content(data):
     res = line + line_indicator
