@@ -270,7 +270,7 @@ stages:
                   
                   print(f"##vso[task.setvariable variable=FlagProjectBudget;]{Flag1}")
                   print(f"##vso[task.setvariable variable=FlagAllowedMontlyDiff;]{Flag2}")
-                arguments: '$(Project_budget), $(Allowed_montly_diff)'
+                arguments: '$(Project_budget) $(Allowed_montly_diff)'
                 workingDirectory: '/tmp'
             - bash: |
                 infracost comment github --path=/tmp/infracost.json \
