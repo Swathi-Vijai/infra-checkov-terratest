@@ -163,8 +163,23 @@ stages:
               displayName: Generate Infracost diff
             
 
+            - task: PythonScript@0
+              inputs:
+                scriptSource: 'inline'
+                script: |
+                  import sys
+
+                  Discount_value = sys.argv[1]
+                  Flag1=0
+                  if ( int(Discount_value) > 0):
+                      Flag1=1
+                  print(f"##vso[task.setvariable variable=FlagDiscout;]{Flag1}")
+                arguments: '$(FlagDiscout)'
+
+
             
             - task: PythonScript@0
+              condition: eq(variables['FlagDiscout'], '1')
               inputs:
                 scriptSource: 'inline'
                 script: |
@@ -241,6 +256,7 @@ stages:
             
 
 
+
             - task: PythonScript@0
               inputs:
                 scriptSource: 'inline'
@@ -258,18 +274,18 @@ stages:
                   
                   with open(pullrequest_branch) as PR:
                       PR_branch_data = json.load(PR)
-                  Flag1=0
                   Flag2=0
+                  Flag3=0
                   if Allowed_montly_diff==0:
                       if round(float(PR_branch_data["totalMonthlyCost"])) > Project_budget_in_USD:
-                          Flag1=1
+                          Flag2=1
                   
                   else:
                       if round(float(PR_branch_data["diffTotalMonthlyCost"])) > Allowed_montly_diff:
-                          Flag2=1
+                          Flag3=1
                   
-                  print(f"##vso[task.setvariable variable=FlagProjectBudget;]{Flag1}")
-                  print(f"##vso[task.setvariable variable=FlagAllowedMontlyDiff;]{Flag2}")
+                  print(f"##vso[task.setvariable variable=FlagProjectBudget;]{Flag2}")
+                  print(f"##vso[task.setvariable variable=FlagAllowedMontlyDiff;]{Flag3}")
                 arguments: '$(Project_budget) $(Allowed_montly_diff)'
                 workingDirectory: '/tmp'
             - bash: |
