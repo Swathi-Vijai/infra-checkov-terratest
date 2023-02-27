@@ -88,7 +88,7 @@ o = open("summary.json", "w")
 f=open('Checkov-report_json.json')
 xml=open("Checkov-report_xml.xml")
 import xml.etree.ElementTree as ET
-xmlTree = ET.parse(f)
+xmlTree = ET.parse(xml)
 root = xmlTree.getroot()
 data=json.load(f)
 res = line + line_indicator
