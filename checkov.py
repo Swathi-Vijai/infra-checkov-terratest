@@ -76,6 +76,8 @@ Skip_Severity = "LOW"
 Restricted_Severity = ["HIGH", "CRITICAL"]
 hfc=0
 flag=0
+lfa=0
+lski=0
 if Skip_Severity in Severity:
    i= Severity.index(Skip_Severity)
    sl= Severity[0:(i+1)]
@@ -84,6 +86,10 @@ else:
 
 o = open("summary.json", "w")
 f=open('Checkov-report_json.json')
+xml=f=open("Checkov-report_xml.xml")
+import xml.etree.ElementTree as ET
+xmlTree = ET.parse(f)
+root = xmlTree.getroot()
 data=json.load(f)
 res = line + line_indicator
 if type(data) == list:
@@ -93,6 +99,7 @@ if type(data) == list:
       skip=[]
       res = res + str('Check Type:     ' +
                                                   data[i]["check_type"]).center(120)
+      check_type=data[i]["check_type"]
       xdata = data[i]["summary"]
       check_results = data[i]["results"]
       passed_check = (check_results["passed_checks"])
@@ -127,6 +134,14 @@ if type(data) == list:
                                                   " , " + (skipped_checks[j]["check_name"]) + " , " + (skipped_checks[j]["resource"]))))
      
       
+      
+      for child in root:
+          if child.attrib["name"]==check_type:
+                child.attrib["failures"] = len(fail)
+                child.attrib["skipped"] = len(skip)
+      
+      lfa=lfa+len(fail)
+      lski=lski+len(skip)
       xdata['passed']=len(pas)
       xdata['failed'] = len(fail) 
       xdata['skipped']=len(skip)
@@ -181,6 +196,9 @@ else:
     xdata = data["summary"]
     res = res + line_indicator + line + line_indicator + ' | '.join(xdata.keys()    ) + line_indicator + divider + line_indicator + ' | '.join(map(str, xdata.values())) + line_indicator + line
 #o.write(res) 
+root.attrib["failures"]=lfa
+root.attrib["skipped"]=lski
+xml.close()
 o.close()
 print(f"##vso[task.setvariable variable=GhComment;]{res}")
 f.close()
